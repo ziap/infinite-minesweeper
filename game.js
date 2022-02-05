@@ -269,4 +269,4 @@ class Board extends Grid {
   }
 }
 
-new Board(10 / 81);
+new Board(0.2);
