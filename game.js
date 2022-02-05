@@ -34,55 +34,170 @@ class Board extends Grid {
     else this.flag(x, y);
   }
 
-  draw_cell(x, y) {
-    if (this.data[x + "," + y].explored) {
-      this.ctx.fillStyle = "#282c34";
-      this.ctx.fillRect(
-        x * this.cell_size,
-        y * this.cell_size,
-        this.cell_size,
-        this.cell_size
-      );
-
-      if (this.data[x + "," + y].is_mine) {
-        this.ctx.fillStyle = "#e06c75";
-        this.ctx.fillRect(
-          (x + 0.1) * this.cell_size,
-          (y + 0.1) * this.cell_size,
-          0.8 * this.cell_size,
-          0.8 * this.cell_size
-        );
-        this.ctx.drawImage(
-          this.bomb_img,
-          (x + 0.2) * this.cell_size,
-          (y + 0.2) * this.cell_size,
-          0.6 * this.cell_size,
-          0.6 * this.cell_size
-        );
-      } else {
-        if (this.data[x + "," + y].mines > 0) {
-          this.ctx.fillStyle = "#abb3bf";
-          this.ctx.font = 0.6 * this.cell_size + "px sans-serif";
-          this.ctx.textAlign = "center";
-          this.ctx.textBaseline = "middle";
-          this.ctx.fillText(
-            this.data[x + "," + y].mines,
-            x * this.cell_size + this.cell_size / 2,
-            y * this.cell_size + this.cell_size / 2
-          );
-        }
-      }
-    } else {
-      if (this.data[x + "," + y].flagged) {
+  draw_flags() {
+    for (const [key, cell] of Object.entries(this.data)) {
+      if (cell.flagged) {
+        const [x, y] = key.split(",").map((x) => parseInt(x));
+        this.draw_plot(x, y, "#98c379");
         this.ctx.drawImage(
           this.flag_img,
-          (x + 0.2) * this.cell_size,
-          (y + 0.2) * this.cell_size,
-          0.6 * this.cell_size,
-          0.6 * this.cell_size
+          (x + 0.25) * this.cell_size,
+          (y + 0.25) * this.cell_size,
+          0.5 * this.cell_size,
+          0.5 * this.cell_size
         );
       }
     }
+  }
+
+  draw_explored_or_flagged() {
+    for (const [key, cell] of Object.entries(this.data)) {
+      if (cell.explored || cell.flagged) {
+        const [x, y] = key.split(",").map((x) => parseInt(x));
+        this.ctx.fillStyle = "#282c34";
+        this.ctx.beginPath();
+        this.ctx.moveTo(x * this.cell_size, (y - 0.1) * this.cell_size);
+        this.ctx.arcTo(
+          (x + 1.1) * this.cell_size,
+          (y - 0.1) * this.cell_size,
+          (x + 1.1) * this.cell_size,
+          y * this.cell_size,
+          0.1 * this.cell_size
+        );
+        this.ctx.arcTo(
+          (x + 1.1) * this.cell_size,
+          (y + 1.1) * this.cell_size,
+          (x + 0.1) * this.cell_size,
+          (y + 1.1) * this.cell_size,
+          0.1 * this.cell_size
+        );
+        this.ctx.arcTo(
+          (x - 0.1) * this.cell_size,
+          (y + 1.1) * this.cell_size,
+          (x - 0.1) * this.cell_size,
+          y * this.cell_size,
+          0.1 * this.cell_size
+        );
+        this.ctx.arcTo(
+          (x - 0.1) * this.cell_size,
+          (y - 0.1) * this.cell_size,
+          x * this.cell_size,
+          (y - 0.1) * this.cell_size,
+          0.1 * this.cell_size
+        );
+        this.ctx.fill();
+      }
+    }
+  }
+
+  draw_numbers() {
+    for (const [key, cell] of Object.entries(this.data)) {
+      const [x, y] = key.split(",").map((x) => parseInt(x));
+      if (cell.mines > 0) {
+        this.ctx.fillStyle = "#ffffff";
+        this.ctx.font = 0.6 * this.cell_size + "px sans-serif";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(
+          cell.mines,
+          (x + 0.5) * this.cell_size,
+          (y + 0.5) * this.cell_size
+        );
+      }
+    }
+  }
+
+  draw_plot(x, y, color) {
+    this.ctx.fillStyle = color;
+    this.ctx.beginPath();
+    this.ctx.moveTo((x + 0.2) * this.cell_size, (y + 0.1) * this.cell_size);
+    this.ctx.arcTo(
+      (x + 0.9) * this.cell_size,
+      (y + 0.1) * this.cell_size,
+      (x + 0.9) * this.cell_size,
+      (y + 0.2) * this.cell_size,
+      0.1 * this.cell_size
+    );
+    this.ctx.arcTo(
+      (x + 0.9) * this.cell_size,
+      (y + 0.9) * this.cell_size,
+      (x + 0.2) * this.cell_size,
+      (y + 0.9) * this.cell_size,
+      0.1 * this.cell_size
+    );
+    this.ctx.arcTo(
+      (x + 0.1) * this.cell_size,
+      (y + 0.9) * this.cell_size,
+      (x + 0.1) * this.cell_size,
+      (y + 0.2) * this.cell_size,
+      0.1 * this.cell_size
+    );
+    this.ctx.arcTo(
+      (x + 0.1) * this.cell_size,
+      (y + 0.1) * this.cell_size,
+      (x + 0.2) * this.cell_size,
+      (y + 0.1) * this.cell_size,
+      0.1 * this.cell_size
+    );
+    this.ctx.fill();
+  }
+
+  draw_mines() {
+    for (const [key, cell] of Object.entries(this.data)) {
+      if (cell.is_mine && cell.explored) {
+        const [x, y] = key.split(",").map((x) => parseInt(x));
+        this.draw_plot(x, y, "#e06c75");
+        this.ctx.drawImage(
+          this.bomb_img,
+          (x + 0.25) * this.cell_size,
+          (y + 0.25) * this.cell_size,
+          0.5 * this.cell_size,
+          0.5 * this.cell_size
+        );
+      }
+    }
+  }
+
+  draw_borders() {
+    for (const [key, cell] of Object.entries(this.data)) {
+      if (cell.explored) {
+        const [x, y] = key.split(",").map((x) => parseInt(x));
+        this.ctx.strokeStyle = "#abb3bf";
+        this.ctx.lineWidth = 0.01 * this.cell_size;
+        this.ctx.strokeRect(
+          x * this.cell_size,
+          (y + 0.2) * this.cell_size,
+          0,
+          0.6 * this.cell_size
+        );
+        this.ctx.strokeRect(
+          (x + 0.2) * this.cell_size,
+          y * this.cell_size,
+          0.6 * this.cell_size,
+          0
+        );
+        this.ctx.strokeRect(
+          (x + 1) * this.cell_size,
+          (y + 0.2) * this.cell_size,
+          0,
+          0.6 * this.cell_size
+        );
+        this.ctx.strokeRect(
+          (x + 0.2) * this.cell_size,
+          (y + 1) * this.cell_size,
+          0.6 * this.cell_size,
+          0
+        );
+      }
+    }
+  }
+
+  draw_grid() {
+    this.draw_explored_or_flagged();
+    this.draw_flags();
+    this.draw_numbers();
+    this.draw_mines();
+    this.draw_borders();
   }
 
   init(new_density) {
@@ -152,42 +267,6 @@ class Board extends Grid {
     if (this.data[x + "," + y].explored) return;
     this.data[x + "," + y].flagged = !this.data[x + "," + y].flagged;
   }
-
-  print() {
-    let min_x = Infinity;
-    let min_y = Infinity;
-    let max_x = -Infinity;
-    let max_y = -Infinity;
-
-    for (const [key, cell] of Object.entries(this.data)) {
-      const [x, y] = key.split(",");
-      min_x = Math.min(min_x, parseInt(x));
-      min_y = Math.min(min_y, parseInt(y));
-      max_x = Math.max(max_x, parseInt(x));
-      max_y = Math.max(max_y, parseInt(y));
-    }
-
-    console.log(min_x, min_y, max_x, max_y);
-
-    for (let y = min_y; y <= max_y; y++) {
-      let line = "";
-      for (let x = min_x; x <= max_x; x++) {
-        if (this.data[x + "," + y] === undefined) {
-          line += ".";
-        } else if (this.data[x + "," + y].explored) {
-          if (this.data[x + "," + y].mines === 0) {
-            line += " ";
-          } else {
-            line += this.data[x + "," + y].mines;
-          }
-        } else {
-          if (this.data[x + "," + y].is_mine) line += "X";
-          else line += ".";
-        }
-      }
-      console.log(line);
-    }
-  }
 }
 
-new Board(99 / (30 * 16));
+new Board(10 / 81);

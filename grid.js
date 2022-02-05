@@ -1,6 +1,6 @@
 export default class Grid {
   center = [0, 0];
-  cell_size = 40;
+  cell_size = 80;
   draw_width = 0;
   draw_height = 0;
   data = {};
@@ -11,7 +11,7 @@ export default class Grid {
 
   secondary_action(x, y) {}
 
-  draw_cell(x, y) {}
+  draw_grid() {}
 
   resize() {
     this.canvas.width = window.innerWidth;
@@ -71,9 +71,7 @@ export default class Grid {
       this.canvas.width / 2 - this.center[0],
       this.canvas.height / 2 - this.center[1]
     );
-    for (const [key, cell] of Object.entries(this.data)) {
-      this.draw_cell(...key.split(",").map((x) => parseInt(x)));
-    }
+    this.draw_grid();
   }
 
   listen_mouse() {
