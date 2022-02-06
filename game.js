@@ -12,7 +12,7 @@ class Cell {
     }
 }
 
-class Board extends Grid {
+export default class Game extends Grid {
     density = 0.25
     first_click = true
     game_over = false
@@ -305,5 +305,3 @@ class Board extends Grid {
         if (!this.data[x + ',' + y].explored) return (this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged)
     }
 }
-
-new Board(0.2)

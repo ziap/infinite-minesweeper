@@ -7,7 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Minesweeper but on an infinite board">
     <title>Infinite Minesweeper</title>
-    <script defer type="module" src="game.js"></script>
+    <script defer type="module">
+        import Game from './game.js';
+
+        new Game(0.2)
+    </script>
 </head>
 
 <body>
