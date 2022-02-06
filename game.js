@@ -302,7 +302,7 @@ class Board extends Grid {
 
     flag(x, y) {
         if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(false, false)
-        if (this.data[x + ',' + y].explored) return (this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged)
+        if (!this.data[x + ',' + y].explored) return (this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged)
     }
 }
 
