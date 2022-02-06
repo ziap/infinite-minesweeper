@@ -93,8 +93,8 @@ export default class Grid {
             if (is_dragging) {
                 this.center[0] -= e.clientX - last_mouse_pos[0]
                 this.center[1] -= e.clientY - last_mouse_pos[1]
-                sum_delta[0] += e.clientX - last_mouse_pos[0]
-                sum_delta[1] += e.clientY - last_mouse_pos[1]
+                sum_delta[0] += Math.abs(e.clientX - last_mouse_pos[0])
+                sum_delta[1] += Math.abs(e.clientY - last_mouse_pos[1])
                 last_mouse_pos = [e.clientX, e.clientY]
             }
             this.draw()
@@ -103,9 +103,7 @@ export default class Grid {
 
         this.canvas.addEventListener('mouseup', e => {
             is_dragging = false
-            const abs_x = Math.abs(sum_delta[0])
-            const abs_y = Math.abs(sum_delta[1])
-            const max_abs = Math.max(abs_x, abs_y)
+            const max_abs = Math.max(sum_delta[0], sum_delta[1])
             if (max_abs <= 10) {
                 this.interact(e.clientX, e.clientY, e.button)
                 this.draw()
@@ -133,9 +131,7 @@ export default class Grid {
 
         this.canvas.addEventListener('touchend', e => {
             is_dragging = false
-            const abs_x = Math.abs(sum_delta[0])
-            const abs_y = Math.abs(sum_delta[1])
-            const max_abs = Math.max(abs_x, abs_y)
+            const max_abs = Math.max(sum_delta[0], sum_delta[1])
             if (max_abs <= 10) {
                 this.interact(...last_touch_pos, 0)
                 this.draw()
@@ -167,6 +163,8 @@ export default class Grid {
                 this.center[0] /= this.cell_size
                 this.center[1] /= this.cell_size
                 const delta = dist - last_pinch_dist
+                sum_delta[0] += Math.abs(delta)
+                sum_delta[1] += Math.abs(delta)
                 last_pinch_dist = dist
                 this.cell_size += delta
                 this.cell_size = Math.max(this.cell_size, 10)
@@ -177,8 +175,8 @@ export default class Grid {
                 if (!is_dragging) return
                 this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
                 this.center[1] -= e.touches[0].clientY - last_touch_pos[1]
-                sum_delta[0] += e.touches[0].clientX - last_touch_pos[0]
-                sum_delta[1] += e.touches[0].clientY - last_touch_pos[1]
+                sum_delta[0] += Math.abs(e.touches[0].clientX - last_touch_pos[0])
+                sum_delta[1] += Math.abs(e.touches[0].clientY - last_touch_pos[1])
                 last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
                 this.draw()
             }
