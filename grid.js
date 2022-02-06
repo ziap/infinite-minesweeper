@@ -101,11 +101,11 @@ export default class Grid {
     listen_mouse() {
         let last_mouse_pos = [0, 0]
         let is_dragging = false
-        let mouse_down_time = Date.now()
+        let sum_delta = [0, 0]
 
         this.canvas.addEventListener('mousedown', e => {
             is_dragging = true
-            mouse_down_time = Date.now()
+            sum_delta = [0, 0]
             last_mouse_pos = [e.clientX, e.clientY]
         })
 
@@ -113,6 +113,8 @@ export default class Grid {
             if (is_dragging) {
                 this.center[0] -= e.clientX - last_mouse_pos[0]
                 this.center[1] -= e.clientY - last_mouse_pos[1]
+                sum_delta[0] += e.clientX - last_mouse_pos[0]
+                sum_delta[1] += e.clientY - last_mouse_pos[1]
                 last_mouse_pos = [e.clientX, e.clientY]
             }
             this.draw()
@@ -121,7 +123,10 @@ export default class Grid {
 
         this.canvas.addEventListener('mouseup', e => {
             is_dragging = false
-            if (Date.now() - mouse_down_time < 200) {
+            const abs_x = Math.abs(sum_delta[0])
+            const abs_y = Math.abs(sum_delta[1])
+            const max_abs = Math.max(abs_x, abs_y)
+            if (max_abs <= 10) {
                 this.interact(e.clientX, e.clientY, e.button)
                 this.draw()
             }
@@ -144,11 +149,14 @@ export default class Grid {
     listen_touch() {
         let last_touch_pos = [0, 0]
         let is_dragging = false
-        let touch_down_time = Date.now()
+        let sum_delta = [0, 0]
 
         this.canvas.addEventListener('touchend', e => {
             is_dragging = false
-            if (Date.now() - touch_down_time < 200) {
+            const abs_x = Math.abs(sum_delta[0])
+            const abs_y = Math.abs(sum_delta[1])
+            const max_abs = Math.max(abs_x, abs_y)
+            if (max_abs <= 10) {
                 this.interact(...last_touch_pos, 0)
                 this.draw()
             }
@@ -164,7 +172,7 @@ export default class Grid {
                 )
             } else {
                 is_dragging = true
-                touch_down_time = Date.now()
+                sum_delta = [0, 0]
                 last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             }
             e.preventDefault()
@@ -189,6 +197,8 @@ export default class Grid {
                 if (!is_dragging) return
                 this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
                 this.center[1] -= e.touches[0].clientY - last_touch_pos[1]
+                sum_delta[0] += e.touches[0].clientX - last_touch_pos[0]
+                sum_delta[1] += e.touches[0].clientY - last_touch_pos[1]
                 last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
                 this.draw()
             }
