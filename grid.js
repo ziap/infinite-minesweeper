@@ -104,10 +104,11 @@ export default class Grid {
     });
 
     window.addEventListener("wheel", (e) => {
+      this.center[0] /= this.cell_size;
+      this.center[1] /= this.cell_size;
       this.cell_size += e.deltaY;
-      this.center[0] -= e.deltaY / 2;
-      this.center[1] -= e.deltaY / 2;
-      this.cell_size = Math.max(this.cell_size, 10);
+      this.center[0] *= this.cell_size;
+      this.center[1] *= this.cell_size;
       this.draw();
     });
 
@@ -150,12 +151,13 @@ export default class Grid {
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
+        this.center[0] /= this.cell_size;
+        this.center[1] /= this.cell_size;
         const delta = dist - last_pinch_dist;
         last_pinch_dist = dist;
         this.cell_size += delta;
-        this.cell_size = Math.max(this.cell_size, 10);
-        this.center[0] -= delta / 2;
-        this.center[1] -= delta / 2;
+        this.center[0] *= this.cell_size;
+        this.center[1] *= this.cell_size;
         this.draw();
       } else {
         if (!is_dragging) return;

@@ -160,7 +160,7 @@ class Board extends Grid {
 
   draw_borders() {
     for (const [key, cell] of Object.entries(this.data)) {
-      if (cell.explored) {
+      if (cell.explored || cell.flagged) {
         const [x, y] = key.split(",").map((x) => parseInt(x));
         this.ctx.strokeStyle = "#abb3bf";
         this.ctx.lineWidth = 0.01 * this.cell_size;
@@ -226,19 +226,20 @@ class Board extends Grid {
   }
 
   explore(x, y) {
-    if (this.data[x + "," + y] === undefined)
-      this.data[x + "," + y] = new Cell(false, false);
+    if (this.data[x + "," + y] === undefined) {
+      if (this.first_click) this.data[x + "," + y] = new Cell(false, false);
+      else this.is_mine(x, y);
+    }
     if (this.data[x + "," + y].explored || this.data[x + "," + y].flagged)
       return;
 
     this.data[x + "," + y].explored = true;
+    this.first_click = false;
 
-    if (!this.first_click && this.is_mine(x, y)) {
+    if (this.data[x + "," + y].is_mine) {
       this.game_over = true;
       return;
     }
-
-    this.first_click = false;
 
     this.data[x + "," + y].mines = 0;
 
