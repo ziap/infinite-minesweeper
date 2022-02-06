@@ -25,13 +25,14 @@ export default class Game extends Grid {
     data = {}
 
     primary_action(x, y) {
+        const invert = document.getElementById('invert').checked
         if (this.game_over) this.init(this.density)
-        else this.explore(x, y)
+        else (invert && !this.first_click) ? this.flag(x, y) : this.explore(x, y)
     }
 
     secondary_action(x, y) {
         if (this.game_over) this.init(this.density)
-        else this.flag(x, y)
+        else (invert || this.first_click) ? this.explore(x, y) : this.flag(x, y)
     }
 
     draw_plot(x, y, color) {

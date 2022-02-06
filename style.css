@@ -1,0 +1,32 @@
+#grid {
+    position: fixed;
+    inset: 0;
+    background: #fed7aa;
+}
+
+.invert-btn {
+    position: fixed;
+    right: 45px;
+    bottom: 45px;
+    height: fit-content;
+    aspect-ratio: 1;
+    background: #262626;
+    border: solid 0.25rem #262626;
+    box-shadow: 0 0 0 1px #eee;
+    border-radius: 100vmax;
+    overflow: hidden;
+}
+
+.fa-flag {
+    width: 2rem;
+    height: 2rem;
+    padding: 1.25rem;
+    background: #262626;
+    fill: #fff;
+    transition: fill 200ms ease-in-out, background 200ms ease-in-out;
+}
+
+#invert:checked + .fa-flag {
+    fill: #262626;
+    background: #fed7aa;
+}

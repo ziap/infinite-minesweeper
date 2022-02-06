@@ -29,16 +29,8 @@ export default class Grid {
 
     get_mouse_pos(mouse_x, mouse_y) {
         return [
-            Math.round(
-                (mouse_x - this.canvas.width / 2 + this.center[0]) /
-                    this.cell_size -
-                    0.5
-            ),
-            Math.round(
-                (mouse_y - this.canvas.height / 2 + this.center[1]) /
-                    this.cell_size -
-                    0.5
-            )
+            Math.round((mouse_x - this.canvas.width / 2 + this.center[0]) / this.cell_size - 0.5),
+            Math.round((mouse_y - this.canvas.height / 2 + this.center[1]) / this.cell_size - 0.5)
         ]
     }
 
@@ -56,12 +48,7 @@ export default class Grid {
         const [x, y] = this.get_mouse_pos(mouse_x, mouse_y)
         this.ctx.fillStyle = '#eeeeee'
         this.ctx.globalAlpha = 0.5
-        this.ctx.fillRect(
-            x * this.cell_size,
-            y * this.cell_size,
-            this.cell_size,
-            this.cell_size
-        )
+        this.ctx.fillRect(x * this.cell_size, y * this.cell_size, this.cell_size, this.cell_size)
         this.ctx.globalAlpha = 1
     }
 
@@ -69,27 +56,20 @@ export default class Grid {
         this.ctx.restore()
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.save()
-        this.ctx.translate(
-            this.canvas.width / 2 - this.center[0],
-            this.canvas.height / 2 - this.center[1]
-        )
+        this.ctx.translate(this.canvas.width / 2 - this.center[0], this.canvas.height / 2 - this.center[1])
         const entries = []
         for (const [key, cell] of Object.entries(this.data)) {
             const [x, y] = key.split(',').map(x => ~~x)
-            const canvas_pos_x =
-                x * this.cell_size - this.center[0] + this.canvas.width / 2
-            const canvas_pos_y =
-                y * this.cell_size - this.center[1] + this.canvas.height / 2
+            const canvas_pos_x = x * this.cell_size - this.center[0] + this.canvas.width / 2
+            const canvas_pos_y = y * this.cell_size - this.center[1] + this.canvas.height / 2
 
             const canvas_pos_x_min = canvas_pos_x - this.cell_size
             const canvas_pos_x_max = canvas_pos_x + this.cell_size
             const canvas_pos_y_min = canvas_pos_y - this.cell_size
             const canvas_pos_y_max = canvas_pos_y + this.cell_size
 
-            const canvas_pos_x_min_max =
-                canvas_pos_x_min <= this.canvas.width && canvas_pos_x_max >= 0
-            const canvas_pos_y_min_max =
-                canvas_pos_y_min <= this.canvas.height && canvas_pos_y_max >= 0
+            const canvas_pos_x_min_max = canvas_pos_x_min <= this.canvas.width && canvas_pos_x_max >= 0
+            const canvas_pos_y_min_max = canvas_pos_y_min <= this.canvas.height && canvas_pos_y_max >= 0
 
             if (canvas_pos_x_min_max && canvas_pos_y_min_max) {
                 entries.push([[x, y], cell])
