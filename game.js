@@ -306,4 +306,4 @@ class Board extends Grid {
     }
 }
 
-new Board(0.1)
+new Board(0.2)
