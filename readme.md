@@ -17,7 +17,7 @@ Go to [the website](https://infinite-minesweeper.vercel.app) or clone the projec
 
 **Mobile**
 
--   Tap and drag to move### Actions
+-   Tap and drag to move
 -   Pinch to zoom
 
 **Actions**
@@ -40,4 +40,4 @@ Go to [the website](https://infinite-minesweeper.vercel.app) or clone the projec
 
 # License
 
-This app is licensed under the [AGPL-3.0 license](LISENCE)
+This app is licensed under the [AGPL-3.0 license](LICENSE)
