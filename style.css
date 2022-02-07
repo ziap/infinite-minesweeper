@@ -1,3 +1,7 @@
+body {
+  font-family: sans-serif;
+}
+
 #grid {
     position: fixed;
     inset: 0;
@@ -29,4 +33,27 @@
 #invert:checked + .fa-flag {
     fill: #262626;
     background: #fed7aa;
+}
+
+.game-over-menu {
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #262626;
+    transition: opacity 200ms ease-in-out;
+    pointer-events: none;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: #fff;
+
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.game-over + .game-over-menu {
+    opacity: 0.9;
 }

@@ -115,6 +115,7 @@ export default class Grid {
             this.center[1] /= this.cell_size
             this.cell_size += e.deltaY
             this.cell_size = Math.max(this.cell_size, 10)
+            this.cell_size = Math.min(this.cell_size, 200)
             this.center[0] *= this.cell_size
             this.center[1] *= this.cell_size
             this.draw()
@@ -168,6 +169,7 @@ export default class Grid {
                 last_pinch_dist = dist
                 this.cell_size += delta
                 this.cell_size = Math.max(this.cell_size, 10)
+                this.cell_size = Math.min(this.cell_size, 200)
                 this.center[0] *= this.cell_size
                 this.center[1] *= this.cell_size
                 this.draw()

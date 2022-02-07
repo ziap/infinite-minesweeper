@@ -16,6 +16,7 @@ export default class Game extends Grid {
     density = 0.25
     first_click = true
     game_over = false
+    score = 0
     bomb_img = new Image()
     flag_img = new Image()
 
@@ -233,13 +234,19 @@ export default class Game extends Grid {
         this.draw_explored_or_flagged(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
+        if (this.game_over) {
+            document.getElementById('score').textContent = this.score
+            this.canvas.classList.add('game-over')
+        }
     }
 
     init(new_density) {
         this.density = new_density
         this.data = {}
+        this.score = 0
         this.first_click = true
         this.game_over = false
+        this.canvas.classList.remove('game-over')
     }
 
     constructor(new_density) {
@@ -303,7 +310,19 @@ export default class Game extends Grid {
     }
 
     flag(x, y) {
-        if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(false, false)
-        if (!this.data[x + ',' + y].explored) return (this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged)
+        let cell = this.data[x + ',' + y]
+        if (cell === undefined) this.data[x + ',' + y] = new Cell(false, false)
+        cell = this.data[x + ',' + y]
+        if (!cell.explored) {
+            if (cell.flagged) {
+                cell.flagged = false
+                if (cell.is_mine) this.score--;
+                else this.score++;
+            } else {
+                cell.flagged = true
+                if (cell.is_mine) this.score++;
+                else this.score--;
+            }
+        }
     }
 }
