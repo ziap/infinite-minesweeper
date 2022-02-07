@@ -316,12 +316,12 @@ export default class Game extends Grid {
         if (!cell.explored) {
             if (cell.flagged) {
                 cell.flagged = false
-                if (cell.is_mine) this.score--;
-                else this.score++;
+                if (cell.is_mine) this.score--
+                else this.score++
             } else {
                 cell.flagged = true
-                if (cell.is_mine) this.score++;
-                else this.score--;
+                if (cell.is_mine) this.score++
+                else this.score--
             }
         }
     }
