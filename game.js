@@ -234,10 +234,8 @@ export default class Game extends Grid {
         this.draw_explored_or_flagged(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
-        if (this.game_over) {
-            document.getElementById('score').textContent = this.score
-            this.canvas.classList.add('game-over')
-        }
+        document.getElementById('score').textContent = this.score
+        if (this.game_over) this.canvas.classList.add('game-over')
     }
 
     init(new_density) {
@@ -288,6 +286,8 @@ export default class Game extends Grid {
             return
         }
 
+        this.score++
+
         this.data[x + ',' + y].mines = 0
 
         for (let i = -1; i <= 1; i++) {
@@ -310,19 +310,7 @@ export default class Game extends Grid {
     }
 
     flag(x, y) {
-        let cell = this.data[x + ',' + y]
-        if (cell === undefined) this.data[x + ',' + y] = new Cell(false, false)
-        cell = this.data[x + ',' + y]
-        if (!cell.explored) {
-            if (cell.flagged) {
-                cell.flagged = false
-                if (cell.is_mine) this.score--
-                else this.score++
-            } else {
-                cell.flagged = true
-                if (cell.is_mine) this.score++
-                else this.score--
-            }
-        }
+        if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(false, false)
+        if (!this.data[x + ',' + y].explored) this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged
     }
 }

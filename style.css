@@ -1,5 +1,5 @@
 body {
-  font-family: sans-serif;
+    font-family: sans-serif;
 }
 
 #grid {
@@ -56,4 +56,22 @@ body {
 
 .game-over + .game-over-menu {
     opacity: 0.9;
+}
+
+#score {
+    position: fixed;
+    top: 30px;
+    left: 0;
+    width: 100vw;
+    font-size: 4rem;
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+    pointer-events: none;
+    text-shadow:
+       1px 1px 0 #262626,
+     -1px -1px 0 #262626,  
+      1px -1px 0 #262626,
+      -1px 1px 0 #262626,
+       1px 1px 0 #262626;
 }

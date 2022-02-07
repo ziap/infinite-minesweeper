@@ -11,7 +11,7 @@
     <script defer type="module">
         import Game from './game.js';
 
-        new Game(0.2)
+        new Game(0.25)
     </script>
 </head>
 
@@ -19,12 +19,11 @@
     <canvas id="grid"></canvas>
     <div class="game-over-menu">
         <div class="game-over-menu-content">
-            <h1>
-                Game over! Score: <span id="score"></span>
-            </h1>
+            <h1>Game over!</h1>
             <p>Click anywhere to play again</p>
         </div>
     </div>
+    <h1 id="score"></h1>
     <label for="invert" class="invert-btn">
         <input type="checkbox" id="invert" hidden>
         <svg class="fa-flag" viewBox="0 0 512 512">
