@@ -2,6 +2,8 @@
 
 Minesweeper on an infinite board
 
+![Preview](logo.png)
+
 ## Instructions
 
 ## How to play
