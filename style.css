@@ -45,12 +45,12 @@ body {
     background: #262626;
     transition: opacity 200ms ease-in-out;
     pointer-events: none;
-    display: grid;
-    place-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
     text-align: center;
     color: #fff;
-
-    font-size: 2rem;
     font-weight: 400;
 }
 
