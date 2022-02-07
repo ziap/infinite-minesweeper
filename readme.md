@@ -6,11 +6,11 @@ Minesweeper on an infinite board
 
 ## Instructions
 
-## How to play
+### How to play
 
 Go to [the website](https://infinite-minesweeper.vercel.app) or clone the project and run the HTML file.
 
-## Controls
+### Controls
 
 **Desktop**
 
@@ -38,7 +38,15 @@ Go to [the website](https://infinite-minesweeper.vercel.app) or clone the projec
 -   [ ] Zen mode
 -   [ ] Seed based randomization
 -   [ ] High scores and leaderboards
--   [ ] Desktop and mobile client
+-   [ ] Improve performance with WebGL/WebWorkers
+-   [ ] PWA support
+
+## Made with
+
+-   [HTML/CSS/JS](https://developer.mozilla.org/en-US/docs/Web/)
+-   [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/)
+-   [Font Awesome](https://fontawesome.com/v6.0/icons/)
+-   [Vercel](https://vercel.com/)
 
 # License
 
