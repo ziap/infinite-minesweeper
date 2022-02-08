@@ -1,5 +1,6 @@
 export default class TileMap {
     center = [0, 0]
+    cursor = [0, 0]
     cell_size = 80
     draw_width = 0
     draw_height = 0
@@ -7,16 +8,17 @@ export default class TileMap {
     canvas = document.getElementById('grid')
     ctx = this.canvas.getContext('2d')
 
+    prev_time = 0
+
     primary_action(x, y) {}
 
     secondary_action(x, y) {}
 
-    draw_grid(entries) {}
+    draw_grid(entries, delta_time) {}
 
     resize() {
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
-        this.draw()
     }
 
     constructor() {
@@ -25,6 +27,9 @@ export default class TileMap {
 
         this.listen_mouse()
         this.listen_touch()
+
+        this.prev_time = performance.now()
+        requestAnimationFrame(this.update.bind(this))
     }
 
     get_mouse_pos(mouse_x, mouse_y) {
@@ -35,7 +40,7 @@ export default class TileMap {
     }
 
     interact(mouse_x, mouse_y, mouse_button) {
-        const [x, y] = this.get_mouse_pos(mouse_x, mouse_y)
+        const [x, y] = this.cursor
 
         if (mouse_button === 0) {
             this.primary_action(x, y)
@@ -44,15 +49,15 @@ export default class TileMap {
         }
     }
 
-    draw_cursor(mouse_x, mouse_y) {
-        const [x, y] = this.get_mouse_pos(mouse_x, mouse_y)
+    draw_cursor() {
+        const [x, y] = this.cursor
         this.ctx.fillStyle = '#eeeeee'
         this.ctx.globalAlpha = 0.5
         this.ctx.fillRect(x * this.cell_size, y * this.cell_size, this.cell_size, this.cell_size)
         this.ctx.globalAlpha = 1
     }
 
-    draw() {
+    draw(delta_time) {
         this.ctx.restore()
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.save()
@@ -75,7 +80,8 @@ export default class TileMap {
                 entries.push([[x, y], cell])
             }
         }
-        this.draw_grid(entries)
+        this.draw_grid(entries, delta_time)
+        this.draw_cursor()
     }
 
     listen_mouse() {
@@ -90,6 +96,7 @@ export default class TileMap {
         })
 
         this.canvas.addEventListener('mousemove', e => {
+            this.cursor = this.get_mouse_pos(e.clientX, e.clientY)
             if (is_dragging) {
                 this.center[0] -= e.clientX - last_mouse_pos[0]
                 this.center[1] -= e.clientY - last_mouse_pos[1]
@@ -97,8 +104,6 @@ export default class TileMap {
                 sum_delta[1] += Math.abs(e.clientY - last_mouse_pos[1])
                 last_mouse_pos = [e.clientX, e.clientY]
             }
-            this.draw()
-            this.draw_cursor(e.clientX, e.clientY)
         })
 
         this.canvas.addEventListener('mouseup', e => {
@@ -106,7 +111,6 @@ export default class TileMap {
             const max_abs = Math.max(sum_delta[0], sum_delta[1])
             if (max_abs <= 10) {
                 this.interact(e.clientX, e.clientY, e.button)
-                this.draw()
             }
         })
 
@@ -118,7 +122,6 @@ export default class TileMap {
             this.cell_size = Math.min(this.cell_size, 200)
             this.center[0] *= this.cell_size
             this.center[1] *= this.cell_size
-            this.draw()
         })
 
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
@@ -135,7 +138,6 @@ export default class TileMap {
             const max_abs = Math.max(sum_delta[0], sum_delta[1])
             if (max_abs <= 10) {
                 this.interact(...last_touch_pos, 0)
-                this.draw()
             }
             e.preventDefault()
         })
@@ -172,7 +174,6 @@ export default class TileMap {
                 this.cell_size = Math.min(this.cell_size, 200)
                 this.center[0] *= this.cell_size
                 this.center[1] *= this.cell_size
-                this.draw()
             } else {
                 if (!is_dragging) return
                 this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
@@ -180,9 +181,14 @@ export default class TileMap {
                 sum_delta[0] += Math.abs(e.touches[0].clientX - last_touch_pos[0])
                 sum_delta[1] += Math.abs(e.touches[0].clientY - last_touch_pos[1])
                 last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
-                this.draw()
             }
             e.preventDefault()
         })
+    }
+
+    update(time) {
+        this.draw(time - this.prev_time)
+        this.prev_time = time
+        requestAnimationFrame(this.update.bind(this))
     }
 }

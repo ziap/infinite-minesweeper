@@ -222,11 +222,11 @@ export default class Game extends TileMap {
         }
     }
 
-    draw_grid(entries) {
+    draw_grid(entries, delta_time) {
         this.draw_explored_or_flagged(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
-        document.getElementById('score').textContent = this.score || 0
+        document.getElementById('score').textContent = this.score
         if (this.game_over) this.canvas.classList.add('game-over')
     }
 
