@@ -72,7 +72,7 @@ header {
     background: #fed7aa;
 }
 
-@media (hover:hover) {
+@media (hover:hover) and (pointer:fine) {
     .btn:hover > .fa {
         fill: #262626;
         background: #fed7aa;
