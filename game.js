@@ -1,4 +1,4 @@
-import Grid from './grid.js'
+import TileMap from './tilemap.js'
 
 class Cell {
     explored = false
@@ -12,11 +12,12 @@ class Cell {
     }
 }
 
-export default class Game extends Grid {
+export default class Game extends TileMap {
     density = 0.25
     first_click = true
     game_over = false
     score = 0
+    colors = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15', '#2dd4bf', '#ffffff', '#a3a3a3']
     bomb_img = new Image()
     flag_img = new Image()
 
@@ -180,35 +181,7 @@ export default class Game extends Grid {
             if (cell.is_mine && cell.explored) this.draw_mine(x, y)
             else if (cell.flagged) this.draw_flag(x, y)
             else if (cell.mines > 0) {
-                switch (cell.mines) {
-                    case 1:
-                        this.ctx.fillStyle = '#60a5fa'
-                        break
-                    case 2:
-                        this.ctx.fillStyle = '#4ade80'
-                        break
-                    case 3:
-                        this.ctx.fillStyle = '#f87171'
-                        break
-                    case 4:
-                        this.ctx.fillStyle = '#c084fc'
-                        break
-                    case 5:
-                        this.ctx.fillStyle = '#facc15'
-                        break
-                    case 6:
-                        this.ctx.fillStyle = '#2dd4bf'
-                        break
-                    case 7:
-                        this.ctx.fillStyle = '#ffffff'
-                        break
-                    case 8:
-                        this.ctx.fillStyle = '#a3a3a3'
-                        break
-                    default:
-                        this.ctx.fillStyle = '#ffffff'
-                        break
-                }
+                this.ctx.fillStyle = this.colors[cell.mines]
                 this.ctx.font = 0.6 * this.cell_size + 'px sans-serif'
                 this.ctx.textAlign = 'center'
                 this.ctx.textBaseline = 'middle'
@@ -221,11 +194,28 @@ export default class Game extends Grid {
         for (const [[x, y], cell] of entries) {
             if (cell.explored || cell.flagged) {
                 this.ctx.strokeStyle = '#737373'
+                this.ctx.lineCap = 'round'
                 this.ctx.lineWidth = 0.02 * this.cell_size
-                this.ctx.strokeRect(x * this.cell_size, (y + 0.2) * this.cell_size, 0, 0.6 * this.cell_size)
-                this.ctx.strokeRect((x + 0.2) * this.cell_size, y * this.cell_size, 0.6 * this.cell_size, 0)
-                this.ctx.strokeRect((x + 1) * this.cell_size, (y + 0.2) * this.cell_size, 0, 0.6 * this.cell_size)
-                this.ctx.strokeRect((x + 0.2) * this.cell_size, (y + 1) * this.cell_size, 0.6 * this.cell_size, 0)
+                this.ctx.globalAlpha = Math.min(this.ctx.lineWidth, 1)
+                this.ctx.beginPath()
+                this.ctx.moveTo(x * this.cell_size, (y + 0.2) * this.cell_size)
+                this.ctx.lineTo(x * this.cell_size, (y + 0.8) * this.cell_size)
+                this.ctx.stroke()
+
+                this.ctx.beginPath()
+                this.ctx.moveTo((x + 0.2) * this.cell_size, y * this.cell_size)
+                this.ctx.lineTo((x + 0.8) * this.cell_size, y * this.cell_size)
+                this.ctx.stroke()
+
+                this.ctx.beginPath()
+                this.ctx.moveTo((x + 1) * this.cell_size, (y + 0.2) * this.cell_size)
+                this.ctx.lineTo((x + 1) * this.cell_size, (y + 0.8) * this.cell_size)
+                this.ctx.stroke()
+
+                this.ctx.beginPath()
+                this.ctx.moveTo((x + 0.2) * this.cell_size, (y + 1) * this.cell_size)
+                this.ctx.lineTo((x + 0.8) * this.cell_size, (y + 1) * this.cell_size)
+                this.ctx.stroke()
             }
         }
     }
@@ -261,20 +251,28 @@ export default class Game extends Grid {
     }
 
     is_mine(x, y) {
-        if (this.data[x + ',' + y] === undefined) {
-            if (Math.random() < this.density) {
-                this.data[x + ',' + y] = new Cell(true, false)
-            } else {
-                this.data[x + ',' + y] = new Cell(false, false)
-            }
-        }
+        if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(Math.random() < this.density, false)
         return this.data[x + ',' + y].is_mine
     }
 
     explore(x, y) {
         if (this.data[x + ',' + y] === undefined) {
-            if (this.first_click) this.data[x + ',' + y] = new Cell(false, false)
-            else this.is_mine(x, y)
+            if (this.first_click) {
+                const rest_mines = Math.min(25 * this.density, 16)
+                const edge = []
+                for (let i = x - 2; i <= x + 2; i++) {
+                    for (let j = y - 2; j <= y + 2; j++) {
+                        if (Math.abs(x - i) === 2 || Math.abs(y - j) === 2) edge.push([i, j])
+                        this.data[i + ',' + j] = new Cell(false, false)
+                    }
+                }
+                for (let i = 0; i < rest_mines; i++) {
+                    const index = Math.floor(Math.random() * edge.length)
+                    const [x, y] = edge[index]
+                    edge.splice(index, 1)
+                    this.data[x + ',' + y].is_mine = true
+                }
+            } else this.is_mine(x, y)
         }
         if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) return
 

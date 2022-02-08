@@ -1,4 +1,4 @@
-export default class Grid {
+export default class TileMap {
     center = [0, 0]
     cell_size = 80
     draw_width = 0
