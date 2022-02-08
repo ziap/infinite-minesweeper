@@ -8,40 +8,10 @@ body {
     background: #fed7aa;
 }
 
-.invert-btn {
-    position: fixed;
-    right: 45px;
-    bottom: 45px;
-    height: fit-content;
-    aspect-ratio: 1;
-    background: #262626;
-    border: solid 0.25rem #262626;
-    box-shadow: 0 0 0 1px #eee;
-    border-radius: 100vmax;
-    overflow: hidden;
-}
-
-.fa-flag {
-    width: 2rem;
-    height: 2rem;
-    padding: 1.25rem;
-    background: #262626;
-    fill: #fff;
-    transition: fill 200ms ease-in-out, background 200ms ease-in-out;
-}
-
-#invert:checked + .fa-flag {
-    fill: #262626;
-    background: #fed7aa;
-}
-
 .game-over-menu {
     opacity: 0;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background: #262626;
     transition: opacity 200ms ease-in-out;
     pointer-events: none;
@@ -58,20 +28,60 @@ body {
     opacity: 0.9;
 }
 
-#score {
+.header-bg {
+    display: flex;
     position: fixed;
-    top: 30px;
+    top: 0;
     left: 0;
     width: 100vw;
-    font-size: 4rem;
-    text-align: center;
+    background: #262626;
+}
+
+header {
+    flex-grow: 1;
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #262626;
+    border-radius: 100vmax;
+    overflow: hidden;
+}
+
+.fa {
+    width: 2rem;
+    height: 2rem;
+    padding: 1.25rem;
+    background: #262626;
+    fill: #fff;
+    transition: fill 200ms ease-in-out, background 200ms ease-in-out;
+}
+
+#invert:checked + .fa {
+    fill: #262626;
+    background: #fed7aa;
+}
+
+@media (hover:hover) {
+    .btn:hover > .fa {
+        fill: #262626;
+        background: #fed7aa;
+    }
+}
+
+#score {
+    margin: 0;
+    font-size: 3rem;
     color: #fff;
-    font-weight: 600;
-    pointer-events: none;
-    text-shadow:
-       1px 1px 0 #262626,
-     -1px -1px 0 #262626,  
-      1px -1px 0 #262626,
-      -1px 1px 0 #262626,
-       1px 1px 0 #262626;
+    font-weight: 400;
 }

@@ -216,6 +216,8 @@ export default class Game extends TileMap {
                 this.ctx.moveTo((x + 0.2) * this.cell_size, (y + 1) * this.cell_size)
                 this.ctx.lineTo((x + 0.8) * this.cell_size, (y + 1) * this.cell_size)
                 this.ctx.stroke()
+
+                this.ctx.globalAlpha = 1
             }
         }
     }
@@ -224,7 +226,7 @@ export default class Game extends TileMap {
         this.draw_explored_or_flagged(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
-        document.getElementById('score').textContent = this.score
+        document.getElementById('score').textContent = this.score || 0
         if (this.game_over) this.canvas.classList.add('game-over')
     }
 
