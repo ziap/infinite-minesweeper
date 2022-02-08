@@ -258,19 +258,13 @@ export default class Game extends TileMap {
     explore(x, y) {
         if (this.data[x + ',' + y] === undefined) {
             if (this.first_click) {
-                const rest_mines = Math.min(25 * this.density, 16)
+                const rest_mines = Math.min(25 * this.density / 16, 1)
                 const edge = []
                 for (let i = x - 2; i <= x + 2; i++) {
                     for (let j = y - 2; j <= y + 2; j++) {
-                        if (Math.abs(x - i) === 2 || Math.abs(y - j) === 2) edge.push([i, j])
                         this.data[i + ',' + j] = new Cell(false, false)
+                        if (Math.abs(x - i) === 2 || Math.abs(y - j) === 2) this.data[i + ',' + j].is_mine = (Math.random() < rest_mines)
                     }
-                }
-                for (let i = 0; i < rest_mines; i++) {
-                    const index = Math.floor(Math.random() * edge.length)
-                    const [x, y] = edge[index]
-                    edge.splice(index, 1)
-                    this.data[x + ',' + y].is_mine = true
                 }
             } else this.is_mine(x, y)
         }
