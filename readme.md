@@ -55,24 +55,12 @@ Earn points by revealing tiles that don't contain mines.
 
 ## Features
 
-**Done**
-
--   2D infinite scrolling grid
--   Randomly placed mines
--   Mobile support
-
-**In progress**
-
--   Animations
--   Sound effects
--   Menu system
--   Multiple game modes (time limit, mine limit, etc.)
--   Zen mode (no goal or restriction, save and load, etc.)
-
-**Planned**
-
--   High scores and leaderboards (local only)
--   PWA support
+| Done                       | In progress         | Planned           |
+|----------------------------|---------------------|-------------------|
+| 2D infinite scrolling grid | Animations          | High scores       |
+| Randomly placed mines      | SFX                 | Local leaderboard |
+| Mobile support             | Menu system         | PWA support       |
+|                            | Multiple game modes |                   |
 
 **May or may not be implemented**
 
