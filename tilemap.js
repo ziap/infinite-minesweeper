@@ -118,7 +118,7 @@ export default class TileMap {
         window.addEventListener('wheel', e => {
             this.center[0] /= this.cell_size
             this.center[1] /= this.cell_size
-            this.cell_size += e.deltaY
+            this.cell_size -= e.deltaY
             this.cell_size = Math.max(this.cell_size, 10)
             this.cell_size = Math.min(this.cell_size, 200)
             this.center[0] *= this.cell_size
