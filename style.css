@@ -74,8 +74,13 @@ header {
 
 @media (hover:hover) and (pointer:fine) {
     .btn:hover > .fa {
+        fill: #fed7aa;
+        background: #525252;
+    }
+
+    .btn:hover > #invert:checked + .fa {
         fill: #262626;
-        background: #fed7aa;
+        background: #ffffff;
     }
 }
 
@@ -84,5 +89,5 @@ header {
     font-size: 3rem;
     color: #fff;
     font-weight: 400;
-    pointer-events: none;
+    user-select: none;
 }
