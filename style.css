@@ -74,13 +74,13 @@ header {
 
 @media (hover: hover) and (pointer: fine) {
     .btn:hover > .fa {
-        fill: #fed7aa;
+        fill: #fff;
         background: #525252;
     }
 
     .btn:hover > #invert:checked + .fa {
         fill: #262626;
-        background: #ffffff;
+        background: #fff;
     }
 }
 
