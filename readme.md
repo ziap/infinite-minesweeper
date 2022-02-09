@@ -62,7 +62,7 @@ Earn points by revealing tiles without a mine.
 | Mobile support               | Menu system                | PWA support       |
 |                              | Multiple game modes        |                   |
 
-**:question: May or may not be implemented**
+**:bulb: May or may not be implemented**
 
 -   Online leaderboards/multiplayer
 -   Seed based randomization
