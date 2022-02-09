@@ -6,24 +6,24 @@ Minesweeper on an infinite board
 
 ## Design goals
 
-We want the game to be small, simple and accessible.
+We want the game to be tiny, simple, and accessible.
 So we decided to make it on the web, with no dependencies other than the standard web API.
-That means we won't use any:
+That means we won't use:
 
--   Game engine (like Phaser or Unity)
--   UI framework (like React or Vue)
--   Canvas library (like Pixi.js or P5.js)
--   Preprocessor (like Sass or TypeScript)
+-   Any game engine (like Phaser or Unity)
+-   Any UI framework (like React or Vue)
+-   Any Canvas library (like Pixi.js or P5.js)
+-   Any preprocessor (like Sass or TypeScript)
 
 Some other things we wanted to keep in mind:
 
--   📱 Mobile support is built in. So the app must be:
+-   📱 Mobile support is built-in. So the app must be:
 
     -   📐 Responsive.
     -   🚀 Fast enough to run on a mobile device.
-    -   🕹️ Touch friendly. (support both touch and mouse input)
+    -   🕹️ Touch-friendly. (support both touch and mouse input)
 
--   ✨ Decent, presentable graphics, animations and UI.
+-   ✨ Decent, presentable graphics, animations, and UI.
 
 -   📊 Clean, optimized, well-documented, heavily tested code.
 
@@ -47,11 +47,11 @@ Go to [the website](https://infinite-minesweeper.vercel.app) or clone the projec
 
 **Actions**
 
--   Left click or tap to reveal a tile
--   Right click to mark a cell as a mine
+-   Left-click or tap to reveal a tile
+-   Right-click to mark a cell as a mine
 -   Toggle between reveal and mark with the flag button
 
-Earn points by revealing tiles that don't contain mines.
+Earn points by revealing tiles without a mine.
 
 ## Features
 
@@ -79,4 +79,4 @@ Earn points by revealing tiles that don't contain mines.
 
 # License
 
-This app is licensed under the [AGPL-3.0 license](LICENSE)
+This app is licensed under the [AGPL-3.0 license](LICENSE).
