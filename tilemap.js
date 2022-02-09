@@ -116,13 +116,18 @@ export default class TileMap {
         })
 
         window.addEventListener('wheel', e => {
+            console.log(e.clientX, e.clientY, this.center)
+            this.center[0] += e.clientX - this.canvas.width / 2
+            this.center[1] += e.clientY - this.canvas.height / 2
             this.center[0] /= this.cell_size
             this.center[1] /= this.cell_size
-            this.cell_size -= e.deltaY
+            this.cell_size -= e.deltaY / 5
             this.cell_size = Math.max(this.cell_size, 10)
             this.cell_size = Math.min(this.cell_size, 200)
             this.center[0] *= this.cell_size
             this.center[1] *= this.cell_size
+            this.center[0] -= e.clientX - this.canvas.width / 2
+            this.center[1] -= e.clientY - this.canvas.height / 2
         })
 
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
@@ -165,6 +170,10 @@ export default class TileMap {
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 )
+                const avg_x = (e.touches[0].clientX + e.touches[1].clientX) / 2
+                const avg_y = (e.touches[0].clientY + e.touches[1].clientY) / 2
+                this.center[0] += avg_x - this.canvas.width / 2
+                this.center[1] += avg_y - this.canvas.height / 2
                 this.center[0] /= this.cell_size
                 this.center[1] /= this.cell_size
                 const delta = dist - last_pinch_dist
@@ -176,6 +185,8 @@ export default class TileMap {
                 this.cell_size = Math.min(this.cell_size, 200)
                 this.center[0] *= this.cell_size
                 this.center[1] *= this.cell_size
+                this.center[0] -= avg_x - this.canvas.width / 2
+                this.center[1] -= avg_y - this.canvas.height / 2
             } else {
                 if (!is_dragging) return
                 this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
