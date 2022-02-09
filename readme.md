@@ -55,7 +55,7 @@ Earn points by revealing tiles that don't contain mines.
 
 ## Features
 
-| ✅ Done                    | 🚧 In progress      | 🗒️ Planned        |
+| ☑️ Done                    | 🚧 In progress      | 🗒️ Planned        |
 | -------------------------- | ------------------- | ----------------- |
 | 2D infinite scrolling grid | Animations          | High scores       |
 | Randomly placed mines      | SFX                 | Local leaderboard |
