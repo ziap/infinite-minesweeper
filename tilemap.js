@@ -115,8 +115,7 @@ export default class TileMap {
             }
         })
 
-        window.addEventListener('wheel', e => {
-            console.log(e.clientX, e.clientY, this.center)
+        this.canvas.addEventListener('wheel', e => {
             this.center[0] += e.clientX - this.canvas.width / 2
             this.center[1] += e.clientY - this.canvas.height / 2
             this.center[0] /= this.cell_size
@@ -129,6 +128,8 @@ export default class TileMap {
             this.center[0] -= e.clientX - this.canvas.width / 2
             this.center[1] -= e.clientY - this.canvas.height / 2
         })
+
+        this.canvas.addEventListener('mouseout', e => is_dragging = false)
 
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
     }

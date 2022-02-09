@@ -84,4 +84,5 @@ header {
     font-size: 3rem;
     color: #fff;
     font-weight: 400;
+    pointer-events: none;
 }
