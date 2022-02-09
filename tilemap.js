@@ -1,6 +1,6 @@
 export default class TileMap {
     center = [0, 0]
-    cursor = [0, 0]
+    cursor = null
     cell_size = 80
     draw_width = 0
     draw_height = 0
@@ -40,8 +40,8 @@ export default class TileMap {
     }
 
     interact(mouse_x, mouse_y, mouse_button) {
-        const [x, y] = this.cursor
-
+        const [x, y] = this.get_mouse_pos(mouse_x, mouse_y)
+        
         if (mouse_button === 0) {
             this.primary_action(x, y)
         } else if (mouse_button === 2) {
@@ -50,6 +50,7 @@ export default class TileMap {
     }
 
     draw_cursor() {
+        if (!this.cursor) return
         const [x, y] = this.cursor
         this.ctx.fillStyle = '#eeeeee'
         this.ctx.globalAlpha = 0.5
@@ -144,6 +145,7 @@ export default class TileMap {
 
         let last_pinch_dist = 0
         this.canvas.addEventListener('touchstart', e => {
+            this.cursor = null
             if (e.touches.length > 1) {
                 last_pinch_dist = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
