@@ -17,15 +17,15 @@ That means we won't use:
 
 Some other things we wanted to keep in mind:
 
--   📱 Mobile support is built-in. So the app must be:
+-   :iphone: Mobile support is built-in. So the app must be:
 
-    -   📐 Responsive.
-    -   🚀 Fast enough to run on a mobile device.
-    -   🕹️ Touch-friendly. (support both touch and mouse input)
+    -   :triangular_ruler: Responsive.
+    -   :rocket: Fast enough to run on a mobile device.
+    -   :video_game: Touch-friendly. (support both touch and mouse input)
 
--   ✨ Decent, presentable graphics, animations, and UI.
+-   :sparkles: Decent, presentable graphics, animations, and UI.
 
--   📊 Clean, optimized, well-documented, heavily tested code.
+-   :bar_chart: Clean, optimized, well-documented, heavily tested code.
 
 ## Instructions
 
@@ -55,12 +55,12 @@ Earn points by revealing tiles without a mine.
 
 ## Features
 
-| ☑️ Done                    | 🚧 In progress      | 🗒️ Planned        |
-| -------------------------- | ------------------- | ----------------- |
-| 2D infinite scrolling grid | Animations          | High scores       |
-| Randomly placed mines      | SFX                 | Local leaderboard |
-| Mobile support             | Menu system         | PWA support       |
-|                            | Multiple game modes |                   |
+| :ballot_box_with_check: Done | :construction: In progress | :pushpin: Planned |
+| ---------------------------- | -------------------------- | ----------------- |
+| 2D infinite scrolling grid   | Animations                 | High scores       |
+| Randomly placed mines        | SFX                        | Local leaderboard |
+| Mobile support               | Menu system                | PWA support       |
+|                              | Multiple game modes        |                   |
 
 **❓ May or may not be implemented**
 
