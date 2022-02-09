@@ -41,7 +41,7 @@ export default class TileMap {
 
     interact(mouse_x, mouse_y, mouse_button) {
         const [x, y] = this.get_mouse_pos(mouse_x, mouse_y)
-        
+
         if (mouse_button === 0) {
             this.primary_action(x, y)
         } else if (mouse_button === 2) {
@@ -129,7 +129,7 @@ export default class TileMap {
             this.center[1] -= e.clientY - this.canvas.height / 2
         })
 
-        this.canvas.addEventListener('mouseout', e => is_dragging = false)
+        this.canvas.addEventListener('mouseout', e => (is_dragging = false))
 
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
     }
