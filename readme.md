@@ -55,14 +55,14 @@ Earn points by revealing tiles that don't contain mines.
 
 ## Features
 
-| Done                       | In progress         | Planned           |
-|----------------------------|---------------------|-------------------|
+| ✅ Done                    | 🚧 In progress      | 🗒️ Planned        |
+| -------------------------- | ------------------- | ----------------- |
 | 2D infinite scrolling grid | Animations          | High scores       |
 | Randomly placed mines      | SFX                 | Local leaderboard |
 | Mobile support             | Menu system         | PWA support       |
 |                            | Multiple game modes |                   |
 
-**May or may not be implemented**
+**❓ May or may not be implemented**
 
 -   Online leaderboards/multiplayer
 -   Seed based randomization
