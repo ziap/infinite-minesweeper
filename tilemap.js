@@ -6,7 +6,7 @@ export default class TileMap {
     draw_height = 0
     data = {}
     animation = {}
-    animation_duration = 100
+    animation_duration = 200
     canvas = document.getElementById('grid')
     ctx = this.canvas.getContext('2d')
 

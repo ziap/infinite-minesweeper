@@ -38,6 +38,15 @@ export default class Game extends TileMap {
         else invert || this.first_click ? this.explore(x, y) : this.flag(x, y)
     }
 
+    get_tween(x, y) {
+        let tween = 1
+        if (this.animation[x + ',' + y] !== undefined) tween = Math.max(0, this.animation[x + ',' + y])
+        if (!(this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged)) tween = 1 - tween
+        
+        // Bezier curve
+        return tween * tween * (3 - 2 * tween)
+    }
+
     // Draw a rounded rectangle from point x, y to point x1, y1 with radius r
     rounded_rectangle(x, y, width, height, radius, color) {
         x *= this.cell_size
@@ -110,11 +119,7 @@ export default class Game extends TileMap {
                 this.ctx.strokeStyle = '#262626'
                 this.ctx.lineWidth = 0.02 * this.cell_size
 
-                let tween = 1
-                if (this.animation[x + ',' + y] !== undefined) {
-                    tween *= Math.max(0, this.animation[x + ',' + y])
-                    if (!(cell.explored || cell.flagged)) tween = 1 - tween
-                }
+                const tween = this.get_tween(x, y)
                 this.rounded_rectangle(
                     x + 0.5 - 0.6 * tween,
                     y + 0.5 - 0.6 * tween,
@@ -154,8 +159,7 @@ export default class Game extends TileMap {
             else if (cell.flagged) this.draw_flag(x, y)
             else if (cell.mines > 0) {
                 this.ctx.fillStyle = this.colors[cell.mines]
-                let font_size = 0.6 * this.cell_size
-                if (this.animation[x + ',' + y] !== undefined) font_size *= Math.max(0, this.animation[x + ',' + y])
+                const font_size = 0.6 * this.cell_size * this.get_tween(x, y)
                 this.ctx.font = font_size + 'px Arial'
                 this.ctx.textAlign = 'center'
                 this.ctx.textBaseline = 'middle'
@@ -166,7 +170,7 @@ export default class Game extends TileMap {
 
     draw_borders(entries) {
         for (const [[x, y], cell] of entries) {
-            if ((cell.explored || cell.flagged) && this.animation[x + ',' + y] >= 5 / 6) {
+            if ((cell.explored || cell.flagged) && this.get_tween(x, y) >= 5 / 6) {
                 this.ctx.strokeStyle = '#737373'
                 this.ctx.lineCap = 'round'
                 this.ctx.lineWidth = 0.02 * this.cell_size
@@ -259,7 +263,9 @@ export default class Game extends TileMap {
             return
         }
 
-        this.score++
+        setTimeout(() => {
+            this.score++
+        }, 0 - this.animation[x + ',' + y] * this.animation_duration)
 
         this.data[x + ',' + y].mines = 0
 
