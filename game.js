@@ -156,7 +156,7 @@ export default class Game extends TileMap {
                 this.ctx.fillStyle = this.colors[cell.mines]
                 let font_size = 0.6 * this.cell_size
                 if (this.animation[x + ',' + y] !== undefined) font_size *= Math.max(0, this.animation[x + ',' + y])
-                this.ctx.font = font_size + 'px sans serif'
+                this.ctx.font = font_size + 'px Arial'
                 this.ctx.textAlign = 'center'
                 this.ctx.textBaseline = 'middle'
                 this.ctx.fillText(cell.mines, (x + 0.5) * this.cell_size, (y + 0.5) * this.cell_size)
@@ -251,7 +251,7 @@ export default class Game extends TileMap {
         if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) return
 
         this.data[x + ',' + y].explored = true
-        this.animation[x + ',' + y] = -0.1 * Math.hypot(x - start_x, y - start_y)
+        this.animation[x + ',' + y] = -0.5 * Math.hypot(x - start_x, y - start_y)
         this.first_click = false
 
         if (this.data[x + ',' + y].is_mine) {
