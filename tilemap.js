@@ -183,11 +183,11 @@ export default class TileMap {
                 this.center[1] += avg_y - this.canvas.height / 2
                 this.center[0] /= this.cell_size
                 this.center[1] /= this.cell_size
-                const delta = dist - last_pinch_dist
-                sum_delta[0] += Math.abs(delta)
-                sum_delta[1] += Math.abs(delta)
+                const delta = Math.abs(dist - last_pinch_dist)
+                sum_delta[0] += delta
+                sum_delta[1] += delta
                 last_pinch_dist = dist
-                this.cell_size += delta
+                this.cell_size *= dist / last_pinch_dist
                 this.cell_size = Math.max(this.cell_size, 10)
                 this.cell_size = Math.min(this.cell_size, 200)
                 this.center[0] *= this.cell_size
