@@ -38,46 +38,31 @@ export default class Game extends TileMap {
         else invert || this.first_click ? this.explore(x, y) : this.flag(x, y)
     }
 
-    draw_plot(x, y, color) {
+    // Draw a rounded rectangle from point x, y to point x1, y1 with radius r
+    rounded_rectangle(x, y, width, height, radius, color) {
+        x *= this.cell_size
+        y *= this.cell_size
+        width *= this.cell_size
+        height *= this.cell_size
+        radius *= this.cell_size
+        if (width < 2 * radius) radius = width / 2
+        if (height < 2 * radius) radius = height / 2
         this.ctx.fillStyle = color
         this.ctx.strokeStyle = '#262626'
         this.ctx.lineWidth = 0.02 * this.cell_size
         this.ctx.beginPath()
-        this.ctx.moveTo((x + 0.2) * this.cell_size, (y + 0.1) * this.cell_size)
-        this.ctx.arcTo(
-            (x + 0.9) * this.cell_size,
-            (y + 0.1) * this.cell_size,
-            (x + 0.9) * this.cell_size,
-            (y + 0.2) * this.cell_size,
-            0.1 * this.cell_size
-        )
-        this.ctx.arcTo(
-            (x + 0.9) * this.cell_size,
-            (y + 0.9) * this.cell_size,
-            (x + 0.2) * this.cell_size,
-            (y + 0.9) * this.cell_size,
-            0.1 * this.cell_size
-        )
-        this.ctx.arcTo(
-            (x + 0.1) * this.cell_size,
-            (y + 0.9) * this.cell_size,
-            (x + 0.1) * this.cell_size,
-            (y + 0.2) * this.cell_size,
-            0.1 * this.cell_size
-        )
-        this.ctx.arcTo(
-            (x + 0.1) * this.cell_size,
-            (y + 0.1) * this.cell_size,
-            (x + 0.2) * this.cell_size,
-            (y + 0.1) * this.cell_size,
-            0.1 * this.cell_size
-        )
+        this.ctx.moveTo(x + radius, y)
+        this.ctx.arcTo(x + width, y, x + width, y + height, radius)
+        this.ctx.arcTo(x + width, y + height, x, y + height, radius)
+        this.ctx.arcTo(x, y + height, x, y, radius)
+        this.ctx.arcTo(x, y, x + width, y, radius)
         this.ctx.fill()
         this.ctx.stroke()
     }
 
     draw_mine(x, y) {
-        this.draw_plot(x, y, '#dc2626')
+        if (this.animation[x + ',' + y] < 1) return
+        this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#dc2626')
         this.ctx.drawImage(
             this.bomb_img,
             (x + 0.25) * this.cell_size,
@@ -88,7 +73,8 @@ export default class Game extends TileMap {
     }
 
     draw_flag(x, y) {
-        this.draw_plot(x, y, '#737373')
+        if (this.animation[x + ',' + y] < 1) return
+        this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#737373')
         this.ctx.drawImage(
             this.flag_img,
             (x + 0.25) * this.cell_size,
@@ -119,42 +105,26 @@ export default class Game extends TileMap {
 
     draw_explored_or_flagged(entries) {
         for (const [[x, y], cell] of entries) {
-            if (cell.explored || cell.flagged) {
+            if (cell.explored || cell.flagged || this.animation[x + ',' + y] < 1) {
                 this.ctx.fillStyle = '#262626'
                 this.ctx.strokeStyle = '#262626'
                 this.ctx.lineWidth = 0.02 * this.cell_size
-                this.ctx.beginPath()
-                this.ctx.moveTo(x * this.cell_size, (y - 0.1) * this.cell_size)
-                this.ctx.arcTo(
-                    (x + 1.1) * this.cell_size,
-                    (y - 0.1) * this.cell_size,
-                    (x + 1.1) * this.cell_size,
-                    y * this.cell_size,
-                    0.1 * this.cell_size
+
+                let tween = 1
+                if (this.animation[x + ',' + y] !== undefined) {
+                    tween *= Math.max(0, this.animation[x + ',' + y])
+                    if (!(cell.explored || cell.flagged)) tween = 1 - tween
+                }
+                this.rounded_rectangle(
+                    x + 0.5 - 0.6 * tween,
+                    y + 0.5 - 0.6 * tween,
+                    1.2 * tween,
+                    1.2 * tween,
+                    0.1 * tween,
+                    '#262626'
                 )
-                this.ctx.arcTo(
-                    (x + 1.1) * this.cell_size,
-                    (y + 1.1) * this.cell_size,
-                    (x + 0.1) * this.cell_size,
-                    (y + 1.1) * this.cell_size,
-                    0.1 * this.cell_size
-                )
-                this.ctx.arcTo(
-                    (x - 0.1) * this.cell_size,
-                    (y + 1.1) * this.cell_size,
-                    (x - 0.1) * this.cell_size,
-                    y * this.cell_size,
-                    0.1 * this.cell_size
-                )
-                this.ctx.arcTo(
-                    (x - 0.1) * this.cell_size,
-                    (y - 0.1) * this.cell_size,
-                    x * this.cell_size,
-                    (y - 0.1) * this.cell_size,
-                    0.1 * this.cell_size
-                )
-                this.ctx.fill()
-                this.ctx.stroke()
+
+                if (tween < 1) continue
 
                 if (!this.explored_or_flagged(x + 1, y)) {
                     if (this.explored_or_flagged(x + 1, y - 1)) {
@@ -172,6 +142,8 @@ export default class Game extends TileMap {
                         this.draw_corner(x - 0.1, y + 0.8, x - 0.2, y + 0.9)
                     }
                 }
+
+                this.ctx.globalAlpha = 1
             }
         }
     }
@@ -182,7 +154,9 @@ export default class Game extends TileMap {
             else if (cell.flagged) this.draw_flag(x, y)
             else if (cell.mines > 0) {
                 this.ctx.fillStyle = this.colors[cell.mines]
-                this.ctx.font = 0.6 * this.cell_size + 'px sans-serif'
+                let font_size = 0.6 * this.cell_size
+                if (this.animation[x + ',' + y] !== undefined) font_size *= Math.max(0, this.animation[x + ',' + y])
+                this.ctx.font = font_size + 'px sans serif'
                 this.ctx.textAlign = 'center'
                 this.ctx.textBaseline = 'middle'
                 this.ctx.fillText(cell.mines, (x + 0.5) * this.cell_size, (y + 0.5) * this.cell_size)
@@ -192,7 +166,7 @@ export default class Game extends TileMap {
 
     draw_borders(entries) {
         for (const [[x, y], cell] of entries) {
-            if (cell.explored || cell.flagged) {
+            if ((cell.explored || cell.flagged) && this.animation[x + ',' + y] >= 5 / 6) {
                 this.ctx.strokeStyle = '#737373'
                 this.ctx.lineCap = 'round'
                 this.ctx.lineWidth = 0.02 * this.cell_size
@@ -222,7 +196,7 @@ export default class Game extends TileMap {
         }
     }
 
-    draw_grid(entries, delta_time) {
+    draw_grid(entries) {
         this.draw_explored_or_flagged(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
@@ -248,7 +222,10 @@ export default class Game extends TileMap {
 
     explored_or_flagged(x, y) {
         return (
-            this.data[x + ',' + y] !== undefined && (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged)
+            this.animation[x + ',' + y] !== undefined &&
+            this.data[x + ',' + y] !== undefined &&
+            (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) &&
+            this.animation[x + ',' + y] >= 1
         )
     }
 
@@ -257,16 +234,16 @@ export default class Game extends TileMap {
         return this.data[x + ',' + y].is_mine
     }
 
-    explore(x, y) {
+    explore(x, y, start_x = x, start_y = y) {
         if (this.data[x + ',' + y] === undefined) {
             if (this.first_click) {
                 const rest_mines = Math.min((25 * this.density) / 16, 1)
-                const edge = []
                 for (let i = x - 2; i <= x + 2; i++) {
                     for (let j = y - 2; j <= y + 2; j++) {
                         this.data[i + ',' + j] = new Cell(false, false)
-                        if (Math.abs(x - i) === 2 || Math.abs(y - j) === 2)
+                        if (Math.abs(x - i) === 2 || Math.abs(y - j) === 2) {
                             this.data[i + ',' + j].is_mine = Math.random() < rest_mines
+                        }
                     }
                 }
             } else this.is_mine(x, y)
@@ -274,6 +251,7 @@ export default class Game extends TileMap {
         if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) return
 
         this.data[x + ',' + y].explored = true
+        this.animation[x + ',' + y] = -0.1 * Math.hypot(x - start_x, y - start_y)
         this.first_click = false
 
         if (this.data[x + ',' + y].is_mine) {
@@ -298,7 +276,7 @@ export default class Game extends TileMap {
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (i === 0 && j === 0) continue
-                    this.explore(x + i, y + j)
+                    this.explore(x + i, y + j, start_x, start_y)
                 }
             }
         }
@@ -306,6 +284,10 @@ export default class Game extends TileMap {
 
     flag(x, y) {
         if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(false, false)
-        if (!this.data[x + ',' + y].explored) this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged
+        if (!this.data[x + ',' + y].explored) {
+            this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged
+            if (this.animation[x + ',' + y] === undefined) this.animation[x + ',' + y] = 0
+            else this.animation[x + ',' + y] = 1 - this.animation[x + ',' + y]
+        }
     }
 }

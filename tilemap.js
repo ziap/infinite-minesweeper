@@ -5,6 +5,8 @@ export default class TileMap {
     draw_width = 0
     draw_height = 0
     data = {}
+    animation = {}
+    animation_duration = 200
     canvas = document.getElementById('grid')
     ctx = this.canvas.getContext('2d')
 
@@ -65,6 +67,10 @@ export default class TileMap {
         this.ctx.translate(this.canvas.width / 2 - this.center[0], this.canvas.height / 2 - this.center[1])
         const entries = []
         for (const [key, cell] of Object.entries(this.data)) {
+            if (this.animation[key] !== undefined) {
+                this.animation[key] += delta_time / this.animation_duration
+                this.animation[key] = Math.min(this.animation[key], 1)
+            }
             const [x, y] = key.split(',').map(x => ~~x)
             const canvas_pos_x = x * this.cell_size - this.center[0] + this.canvas.width / 2
             const canvas_pos_y = y * this.cell_size - this.center[1] + this.canvas.height / 2
@@ -81,7 +87,7 @@ export default class TileMap {
                 entries.push([[x, y], cell])
             }
         }
-        this.draw_grid(entries, delta_time)
+        this.draw_grid(entries)
         this.draw_cursor()
     }
 
