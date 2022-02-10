@@ -6,7 +6,7 @@ export default class TileMap {
     draw_height = 0
     data = {}
     animation = {}
-    animation_duration = 200
+    animation_duration = 100
     canvas = document.getElementById('grid')
     ctx = this.canvas.getContext('2d')
 
@@ -105,6 +105,7 @@ export default class TileMap {
         this.canvas.addEventListener('mousemove', e => {
             this.cursor = this.get_mouse_pos(e.clientX, e.clientY)
             if (is_dragging) {
+                this.cursor = null
                 this.center[0] -= e.clientX - last_mouse_pos[0]
                 this.center[1] -= e.clientY - last_mouse_pos[1]
                 sum_delta[0] += Math.abs(e.clientX - last_mouse_pos[0])
@@ -155,7 +156,7 @@ export default class TileMap {
             e.preventDefault()
         })
 
-        let last_pinch_dist = 0 
+        let last_pinch_dist = 0
         this.canvas.addEventListener('touchstart', e => {
             this.cursor = null
             if (e.touches.length > 1) {
@@ -177,10 +178,8 @@ export default class TileMap {
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 )
-                const avg_x = (e.touches[0].clientX + e.touches[1].clientX) / 2
-                const avg_y = (e.touches[0].clientY + e.touches[1].clientY) / 2
-                this.center[0] += avg_x - this.canvas.width / 2
-                this.center[1] += avg_y - this.canvas.height / 2
+                this.center[0] += e.touches[0].clientX - this.canvas.width / 2
+                this.center[1] += e.touches[0].clientY - this.canvas.height / 2
                 this.center[0] /= this.cell_size
                 this.center[1] /= this.cell_size
                 const delta = Math.abs(dist - last_pinch_dist)
@@ -191,18 +190,18 @@ export default class TileMap {
                 this.cell_size = Math.min(this.cell_size, 200)
                 this.center[0] *= this.cell_size
                 this.center[1] *= this.cell_size
-                this.center[0] -= avg_x - this.canvas.width / 2
-                this.center[1] -= avg_y - this.canvas.height / 2
+                this.center[0] -= e.touches[0].clientX - this.canvas.width / 2
+                this.center[1] -= e.touches[0].clientY - this.canvas.height / 2
                 last_pinch_dist = dist
             } else {
                 last_pinch_dist = 0
-                if (!is_dragging) return
-                this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
-                this.center[1] -= e.touches[0].clientY - last_touch_pos[1]
-                sum_delta[0] += Math.abs(e.touches[0].clientX - last_touch_pos[0])
-                sum_delta[1] += Math.abs(e.touches[0].clientY - last_touch_pos[1])
-                last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             }
+            if (!is_dragging) return
+            this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
+            this.center[1] -= e.touches[0].clientY - last_touch_pos[1]
+            sum_delta[0] += Math.abs(e.touches[0].clientX - last_touch_pos[0])
+            sum_delta[1] += Math.abs(e.touches[0].clientY - last_touch_pos[1])
+            last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             e.preventDefault()
         })
     }
