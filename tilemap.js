@@ -155,7 +155,7 @@ export default class TileMap {
             e.preventDefault()
         })
 
-        let last_pinch_dist = 0
+        let last_pinch_dist = 0 
         this.canvas.addEventListener('touchstart', e => {
             this.cursor = null
             if (e.touches.length > 1) {
@@ -186,15 +186,16 @@ export default class TileMap {
                 const delta = Math.abs(dist - last_pinch_dist)
                 sum_delta[0] += delta
                 sum_delta[1] += delta
-                last_pinch_dist = dist
-                this.cell_size *= dist / last_pinch_dist
+                if (last_pinch_dist > 0) this.cell_size *= dist / last_pinch_dist
                 this.cell_size = Math.max(this.cell_size, 10)
                 this.cell_size = Math.min(this.cell_size, 200)
                 this.center[0] *= this.cell_size
                 this.center[1] *= this.cell_size
                 this.center[0] -= avg_x - this.canvas.width / 2
                 this.center[1] -= avg_y - this.canvas.height / 2
+                last_pinch_dist = dist
             } else {
+                last_pinch_dist = 0
                 if (!is_dragging) return
                 this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
                 this.center[1] -= e.touches[0].clientY - last_touch_pos[1]
