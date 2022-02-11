@@ -12,19 +12,47 @@ class Cell {
     }
 }
 
+/**
+ * The color palette for the numbers
+ */
+const COLORS = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15', '#2dd4bf', '#ffffff', '#a3a3a3']
+const BOMB_IMG = new Image()
+const FLAG_IMG = new Image()
+
+BOMB_IMG.src = `data:image/svg+xml; charset=utf8, ${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path
+            fill="#262626"
+            d="M390.5 144.1l12.83-12.83c6.25-6.25 6.25-16.37 0-22.62s-16.37-6.25-22.62 0L367.9 121.5l-35.24-35.17c-8.428-8.428-22.09-8.428-30.52 0l-22.58 22.58C257.2 100.7 233.2 96 208 96C93.13 96 0 189.1 0 304S93.13 512 208 512S416 418.9 416 304c0-25.18-4.703-49.21-12.9-71.55l22.58-22.58c8.428-8.428 8.428-22.09 0-30.52L390.5 144.1zM208 192C146.3 192 96 242.3 96 304C96 312.8 88.84 320 80 320S64 312.8 64 304C64 224.6 128.6 160 208 160C216.8 160 224 167.2 224 176S216.8 192 208 192zM509.1 59.21l-39.73-16.57L452.8 2.918c-1.955-3.932-7.652-3.803-9.543 0l-16.57 39.72l-39.73 16.57c-3.917 1.961-3.786 7.648 0 9.543l39.73 16.57l16.57 39.72c1.876 3.775 7.574 3.96 9.543 0l16.57-39.72l39.73-16.57C512.9 66.86 513 61.17 509.1 59.21z">
+        </path>
+    </svg>`
+)}`
+
+FLAG_IMG.src = `data:image/svg+xml; charset=utf8, ${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path
+            fill="#262626"
+            d="M64 496C64 504.8 56.75 512 48 512h-32C7.25 512 0 504.8 0 496V32c0-17.75 14.25-32 32-32s32 14.25 32 32V496zM476.3 0c-6.365 0-13.01 1.35-19.34 4.233c-45.69 20.86-79.56 27.94-107.8 27.94c-59.96 0-94.81-31.86-163.9-31.87C160.9 .3055 131.6 4.867 96 15.75v350.5c32-9.984 59.87-14.1 84.85-14.1c73.63 0 124.9 31.78 198.6 31.78c31.91 0 68.02-5.971 111.1-23.09C504.1 355.9 512 344.4 512 332.1V30.73C512 11.1 495.3 0 476.3 0z">
+        </path>
+    </svg>`
+)}`
+
 export default class Game extends TileMap {
+    uuid = ''
     density = 0.25
     first_click = true
     game_over = false
     score = 0
-    colors = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15', '#2dd4bf', '#ffffff', '#a3a3a3']
-    bomb_img = new Image()
-    flag_img = new Image()
 
     /**
      * @type {{[key: string]: Cell}}
      */
     data = {}
+
+    constructor(new_density) {
+        super()
+        this.init(new_density)
+    }
 
     primary_action(x, y) {
         const invert = document.getElementById('invert').checked
@@ -42,7 +70,7 @@ export default class Game extends TileMap {
         let tween = 1
         if (this.animation[x + ',' + y] !== undefined) tween = Math.max(0, this.animation[x + ',' + y])
         if (!(this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged)) tween = 1 - tween
-        
+
         // Bezier curve
         return tween * tween * (3 - 2 * tween)
     }
@@ -73,7 +101,7 @@ export default class Game extends TileMap {
         if (this.animation[x + ',' + y] < 1) return
         this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#dc2626')
         this.ctx.drawImage(
-            this.bomb_img,
+            BOMB_IMG,
             (x + 0.25) * this.cell_size,
             (y + 0.25) * this.cell_size,
             0.5 * this.cell_size,
@@ -85,7 +113,7 @@ export default class Game extends TileMap {
         if (this.animation[x + ',' + y] < 1) return
         this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#737373')
         this.ctx.drawImage(
-            this.flag_img,
+            FLAG_IMG,
             (x + 0.25) * this.cell_size,
             (y + 0.25) * this.cell_size,
             0.5 * this.cell_size,
@@ -158,7 +186,7 @@ export default class Game extends TileMap {
             if (cell.is_mine && cell.explored) this.draw_mine(x, y)
             else if (cell.flagged) this.draw_flag(x, y)
             else if (cell.mines > 0) {
-                this.ctx.fillStyle = this.colors[cell.mines]
+                this.ctx.fillStyle = COLORS[cell.mines]
                 const font_size = 0.6 * this.cell_size * this.get_tween(x, y)
                 this.ctx.font = font_size + 'px Arial'
                 this.ctx.textAlign = 'center'
@@ -209,19 +237,14 @@ export default class Game extends TileMap {
     }
 
     init(new_density) {
+        this.uuid = crypto.randomUUID()
         this.density = new_density
         this.data = {}
+        this.animation = {}
         this.score = 0
         this.first_click = true
         this.game_over = false
         this.canvas.classList.remove('game-over')
-    }
-
-    constructor(new_density) {
-        super()
-        this.bomb_img.src = 'assets/bomb.svg'
-        this.flag_img.src = 'assets/flag.svg'
-        this.init(new_density)
     }
 
     explored_or_flagged(x, y) {
@@ -263,8 +286,10 @@ export default class Game extends TileMap {
             return
         }
 
+        const current_uuid = this.uuid
+
         setTimeout(() => {
-            this.score++
+            if (this.uuid === current_uuid) this.score++
         }, 0 - this.animation[x + ',' + y] * this.animation_duration)
 
         this.data[x + ',' + y].mines = 0
