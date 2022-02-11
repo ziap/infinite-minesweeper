@@ -1,0 +1,29 @@
+{
+  "name": "infinite-minesweeper",
+  "version": "1.0.0",
+  "description": "Minesweeper on an infinte board",
+  "type": "module",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --coverage --watchAll"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ziap/infinite-minesweeper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ziap/infinite-minesweeper/issues"
+  },
+  "homepage": "infinite-minesweeper.vercel.app",
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "jest": "^27.5.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

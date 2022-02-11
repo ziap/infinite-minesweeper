@@ -7,8 +7,6 @@ export default class TileMap {
     data = {}
     animation = {}
     animation_duration = 200
-    canvas = document.getElementById('grid')
-    ctx = this.canvas.getContext('2d')
 
     prev_time = 0
 
@@ -24,6 +22,9 @@ export default class TileMap {
     }
 
     constructor() {
+        this.canvas = document.createElement('canvas')
+        this.canvas.id = 'grid'
+        this.ctx = this.canvas.getContext('2d')
         window.addEventListener('resize', () => this.resize())
         this.resize()
 
