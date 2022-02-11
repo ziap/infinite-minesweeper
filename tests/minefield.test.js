@@ -4,7 +4,7 @@ import { jest } from '@jest/globals'
 
 window.crypto = crypto
 
-describe('minefield.js', () => {
+describe('MineField', () => {
     it('Can be instantiated', () => {
         // Arrange
         const minefield = new MineField(0.25)
@@ -142,8 +142,6 @@ describe('minefield.js', () => {
         minefield.secondary_action(-1, 5)
         minefield.primary_action(1, 2)
         minefield.draw(200)
-
-        console.log(minefield.data)
 
         // Assert
         expect(spy_draw_explored_or_flagged).toHaveBeenCalled()

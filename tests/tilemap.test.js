@@ -1,7 +1,7 @@
-import { jest } from '@jest/globals'
 import TileMap from '../build/tilemap.js'
+import { jest } from '@jest/globals'
 
-describe('TileMap.js', () => {
+describe('TileMap', () => {
     const tilemap = new TileMap()
 
     it('Can be instantiated empty', () => {
