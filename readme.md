@@ -1,5 +1,9 @@
 # Infinite Minesweeper
 
+![Coverage](https://img.shields.io/badge/coverage-97.66%25-green?style=for-the-badge)
+![Total lines](https://img.shields.io/badge/TOTAL%20LINES-694-green?style=for-the-badge)
+![Build size](https://img.shields.io/badge/BUILD%20SIZE-26KB-green?style=for-the-badge)
+
 Minesweeper on an infinite board
 
 ![Preview](logo.png)
@@ -75,6 +79,9 @@ Earn points by revealing tiles without a mine.
 -   [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/)
 -   [Tailwind CSS colors](https://tailwindcss.com/docs/customizing-colors)
 -   [Font Awesome](https://fontawesome.com/v6.0/icons/)
+-   [ESLint](https://eslint.org/)
+-   [Prettier](https://prettier.io/)
+-   [Jest](https://jestjs.io/)
 -   [Vercel](https://vercel.com/)
 
 # License

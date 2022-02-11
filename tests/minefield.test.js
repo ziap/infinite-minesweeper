@@ -112,13 +112,13 @@ describe('MineField', () => {
 
     it('Can restart', async () => {
         // Arrange
-        const minefield = new MineField(0.1)
+        const minefield = new MineField(0.125)
 
         // Act
         minefield.primary_action(0, 0)
         minefield.init(0.1)
 
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 200))
 
         // Assert
         expect(minefield.score).toEqual(0)
