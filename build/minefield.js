@@ -44,6 +44,7 @@ export default class MineField extends TileMap {
     game_over = false
     score = 0
     invert_button = document.createElement('input')
+    score_display = document.createElement('h1')
 
     /**
      * @type {{[key: string]: Cell}}
@@ -55,6 +56,7 @@ export default class MineField extends TileMap {
         this.invert_button.type = 'checkbox'
         this.invert_button.id = 'invert'
         this.invert_button.hidden = true
+        this.score_display.id = 'score'
         this.init(new_density)
     }
 
@@ -236,7 +238,7 @@ export default class MineField extends TileMap {
         this.draw_explored_or_flagged(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
-        document.getElementById('score').textContent = this.score
+        this.score_display.textContent = this.score
         if (this.game_over) this.canvas.classList.add('game-over')
     }
 

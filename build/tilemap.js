@@ -2,19 +2,17 @@ export default class TileMap {
     center = [0, 0]
     cursor = null
     cell_size = 80
-    draw_width = 0
-    draw_height = 0
     data = {}
     animation = {}
     animation_duration = 200
 
     prev_time = 0
 
-    primary_action(x, y) {}
+    primary_action() {}
 
-    secondary_action(x, y) {}
+    secondary_action() {}
 
-    draw_grid(entries, delta_time) {}
+    draw_grid() {}
 
     resize() {
         this.canvas.width = window.innerWidth
@@ -137,7 +135,7 @@ export default class TileMap {
             this.center[1] -= e.clientY - this.canvas.height / 2
         })
 
-        this.canvas.addEventListener('mouseout', e => (is_dragging = false))
+        this.canvas.addEventListener('mouseout', () => (is_dragging = false))
 
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
     }
