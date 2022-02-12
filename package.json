@@ -7,10 +7,12 @@
         "test": "test"
     },
     "scripts": {
-        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --coverage --watchAll",
-        "format": "prettier --write '**/*.{js,json,md}'",
-        "lint": "eslint 'build/**/*.{js,json,md}' --fix",
-        "gh-pages": "gh-pages -d build"
+        "dev": "vite dev",
+        "build": "vite build",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --coverage",
+        "format": "prettier --write {src,tests}/**",
+        "lint": "eslint --fix src",
+        "gh-pages": "gh-pages -d dist"
     },
     "repository": {
         "type": "git",
@@ -28,7 +30,8 @@
         "gh-pages": "^3.2.3",
         "jest": "^27.5.1",
         "jest-canvas-mock": "^2.3.1",
-        "prettier": "^2.5.1"
+        "prettier": "^2.5.1",
+        "vite": "^2.8.1"
     },
     "jest": {
         "testEnvironment": "jsdom",

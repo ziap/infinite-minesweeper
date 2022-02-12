@@ -1,4 +1,4 @@
-import Game from '../build/game.js'
+import Game from '../src/game.js'
 import crypto from 'crypto'
 
 window.crypto = crypto

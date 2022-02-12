@@ -1,4 +1,4 @@
-import TileMap from '../build/tilemap.js'
+import TileMap from '../src/tilemap.js'
 import { jest } from '@jest/globals'
 
 describe('TileMap', () => {

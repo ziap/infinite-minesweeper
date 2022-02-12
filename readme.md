@@ -82,6 +82,7 @@ Earn points by revealing tiles without a mine.
 -   [ESLint](https://eslint.org/)
 -   [Prettier](https://prettier.io/)
 -   [Jest](https://jestjs.io/)
+-   [Vite](https://vitejs.dev/)
 -   [Vercel](https://vercel.com/)
 
 # License

@@ -1,4 +1,4 @@
-import MineField from '../build/minefield.js'
+import MineField from '../src/minefield.js'
 import crypto from 'crypto'
 import { jest } from '@jest/globals'
 
