@@ -1,26 +1,25 @@
 name: Unit
 
 on:
-  push:
-    branches: [ master ]
+    push:
+        branches: [master]
 
-  pull_request: 
-    branches: [ master ]
+    pull_request:
+        branches: [master]
 
-  workflow_dispatch:
+    workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install modules
-    - run: npm install
+        steps:
+            - uses: actions/checkout@v2
+            - name: Install modules
+              run: npm install
 
-    - name: Build the project
-    - run: npm run build
-    
-    - name: Test the project
-    - run: npm run test
+            - name: Build the project
+              run: npm run build
 
+            - name: Test the project
+              run: npm run test
