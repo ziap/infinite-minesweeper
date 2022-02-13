@@ -324,7 +324,7 @@ export default class MineField extends TileMap {
 
         setTimeout(() => {
             if (this.uuid === current_uuid) this.score++
-        }, 0 - this.animation[x + ',' + y] * this.animation_duration)
+        }, (1 - this.animation[x + ',' + y]) * this.animation_duration)
 
         this.data[x + ',' + y].mines = 0
 
