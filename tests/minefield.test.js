@@ -127,21 +127,52 @@ describe('MineField', () => {
     it('Can draw', () => {
         // Arrange
         const minefield = new MineField(1)
-        const spy_draw_explored_or_flagged = jest.spyOn(minefield, 'draw_explored_or_flagged')
+        const spy_draw_explored_or_flagged = jest.spyOn(minefield, 'draw_explored')
         const spy_draw_symbol = jest.spyOn(minefield, 'draw_symbol')
         const spy_draw_mine = jest.spyOn(minefield, 'draw_mine')
         const spy_draw_flag = jest.spyOn(minefield, 'draw_flag')
-        const spy_draw_corner = jest.spyOn(minefield, 'draw_corner')
         const spy_draw_border = jest.spyOn(minefield, 'draw_borders')
+        const spy_draw_corner = jest.spyOn(minefield, 'draw_corner')
 
         // Act
-        minefield.primary_action(0, 0)
-        minefield.secondary_action(0, 4)
-        minefield.secondary_action(1, 5)
-        minefield.secondary_action(0, 6)
-        minefield.secondary_action(-1, 5)
-        minefield.primary_action(1, 2)
-        minefield.draw(200)
+        minefield.data = {
+            '0,0': {
+                is_mine: false,
+                explored: true,
+                flagged: false,
+                mines: 1
+            },
+            '1,1': {
+                is_mine: false,
+                explored: true,
+                flagged: false,
+                mines: 1
+            },
+            '1,-1': {
+                is_mine: false,
+                explored: true,
+                flagged: false,
+                mines: 1
+            },
+            '-1,1': {
+                is_mine: true,
+                explored: true,
+                flagged: false,
+            },
+            '-1,-1': {
+                is_mine: true,
+                flagged: true,
+                explored: false
+            }
+        }
+        minefield.animation = {
+            '0,0': 1,
+            '1,1': 1,
+            '1,-1': 1,
+            '-1,1': 1,
+            '-1,-1': 1
+        }
+        minefield.draw(0)
 
         // Assert
         expect(spy_draw_explored_or_flagged).toHaveBeenCalled()

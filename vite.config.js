@@ -6,6 +6,7 @@ const config = {
     root: 'src',
     build: {
         outDir: '../dist',
+        polyfillModulePreload: false,
     }
 }
 

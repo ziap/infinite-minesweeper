@@ -116,8 +116,7 @@ export default class MineField extends TileMap {
     }
 
     draw_flag(x, y) {
-        if (this.animation[x + ',' + y] < 1) return
-        this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#737373')
+        this.ctx.globalAlpha = this.get_tween(x, y)
         this.ctx.drawImage(
             FLAG_IMG,
             (x + 0.25) * this.cell_size,
@@ -125,6 +124,7 @@ export default class MineField extends TileMap {
             0.5 * this.cell_size,
             0.5 * this.cell_size
         )
+        this.ctx.globalAlpha = 1
     }
 
     draw_corner(x, y, x1, y1) {
@@ -146,9 +146,9 @@ export default class MineField extends TileMap {
         this.ctx.stroke()
     }
 
-    draw_explored_or_flagged(entries) {
+    draw_explored(entries) {
         for (const [[x, y], cell] of entries) {
-            if (cell.explored || cell.flagged || this.animation[x + ',' + y] < 1) {
+            if (cell.explored) {
                 this.ctx.fillStyle = '#262626'
                 this.ctx.strokeStyle = '#262626'
                 this.ctx.lineWidth = 0.02 * this.cell_size
@@ -165,19 +165,19 @@ export default class MineField extends TileMap {
 
                 if (tween < 1) continue
 
-                if (!this.explored_or_flagged(x + 1, y)) {
-                    if (this.explored_or_flagged(x + 1, y - 1)) {
+                if (!this.explored(x + 1, y)) {
+                    if (this.explored(x + 1, y - 1)) {
                         this.draw_corner(x + 1.1, y + 0.2, x + 1.2, y + 0.1)
                     }
-                    if (this.explored_or_flagged(x + 1, y + 1)) {
+                    if (this.explored(x + 1, y + 1)) {
                         this.draw_corner(x + 1.1, y + 0.8, x + 1.2, y + 0.9)
                     }
                 }
-                if (!this.explored_or_flagged(x - 1, y)) {
-                    if (this.explored_or_flagged(x - 1, y - 1)) {
+                if (!this.explored(x - 1, y)) {
+                    if (this.explored(x - 1, y - 1)) {
                         this.draw_corner(x - 0.1, y + 0.2, x - 0.2, y + 0.1)
                     }
-                    if (this.explored_or_flagged(x - 1, y + 1)) {
+                    if (this.explored(x - 1, y + 1)) {
                         this.draw_corner(x - 0.1, y + 0.8, x - 0.2, y + 0.9)
                     }
                 }
@@ -190,7 +190,7 @@ export default class MineField extends TileMap {
     draw_symbol(entries) {
         for (const [[x, y], cell] of entries) {
             if (cell.is_mine && cell.explored) this.draw_mine(x, y)
-            else if (cell.flagged) this.draw_flag(x, y)
+            else if (!cell.explored) this.draw_flag(x, y)
             else if (cell.mines > 0) {
                 this.ctx.fillStyle = COLORS[cell.mines]
                 const font_size = 0.6 * this.cell_size * this.get_tween(x, y)
@@ -204,7 +204,7 @@ export default class MineField extends TileMap {
 
     draw_borders(entries) {
         for (const [[x, y], cell] of entries) {
-            if ((cell.explored || cell.flagged) && this.get_tween(x, y) >= 5 / 6) {
+            if (cell.explored && this.get_tween(x, y) >= 5 / 6) {
                 this.ctx.strokeStyle = '#737373'
                 this.ctx.lineCap = 'round'
                 this.ctx.lineWidth = 0.02 * this.cell_size
@@ -235,7 +235,7 @@ export default class MineField extends TileMap {
     }
 
     draw_grid(entries) {
-        this.draw_explored_or_flagged(entries)
+        this.draw_explored(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
         this.score_display.textContent = this.score
@@ -253,11 +253,11 @@ export default class MineField extends TileMap {
         this.canvas.classList.remove('game-over')
     }
 
-    explored_or_flagged(x, y) {
+    explored(x, y) {
         return (
             this.animation[x + ',' + y] !== undefined &&
             this.data[x + ',' + y] !== undefined &&
-            (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) &&
+            this.data[x + ',' + y].explored &&
             this.animation[x + ',' + y] >= 1
         )
     }
