@@ -7,6 +7,7 @@ const config = {
     build: {
         outDir: '../dist',
         polyfillModulePreload: false,
+        emptyOutDir: true
     }
 }
 
