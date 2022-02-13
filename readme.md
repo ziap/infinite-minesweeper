@@ -1,8 +1,8 @@
 # Infinite Minesweeper
 
-![Coverage](https://img.shields.io/badge/coverage-97.66%25-green?style=for-the-badge)
-![Total lines](https://img.shields.io/badge/TOTAL%20LINES-694-green?style=for-the-badge)
-![Build size](https://img.shields.io/badge/BUILD%20SIZE-26KB-green?style=for-the-badge)
+![Coverage](https://img.shields.io/badge/coverage-97.94%25-green?style=for-the-badge)
+![Total lines](https://img.shields.io/badge/TOTAL%20LINES-691-green?style=for-the-badge)
+![Build size](https://img.shields.io/badge/BUILD%20SIZE-15.29KB-green?style=for-the-badge)
 
 Minesweeper on an infinite board
 

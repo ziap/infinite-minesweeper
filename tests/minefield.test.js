@@ -157,7 +157,7 @@ describe('MineField', () => {
             '-1,1': {
                 is_mine: true,
                 explored: true,
-                flagged: false,
+                flagged: false
             },
             '-1,-1': {
                 is_mine: true,
