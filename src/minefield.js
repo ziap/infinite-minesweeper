@@ -77,8 +77,11 @@ export default class MineField extends TileMap {
         if (this.animation[x + ',' + y] !== undefined) tween = Math.max(0, this.animation[x + ',' + y])
         if (!(this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged)) tween = 1 - tween
 
-        // Bezier curve
-        return tween * tween * (3 - 2 * tween)
+        return tween
+    }
+
+    beizer_curve(x) {
+        return x * x * (3 - 2 * x)
     }
 
     // Draw a rounded rectangle from point x, y to point x1, y1 with radius r
@@ -91,7 +94,7 @@ export default class MineField extends TileMap {
         if (width < 2 * radius) radius = width / 2
         if (height < 2 * radius) radius = height / 2
         this.ctx.fillStyle = color
-        this.ctx.strokeStyle = '#262626'
+        this.ctx.strokeStyle = color
         this.ctx.lineWidth = 0.02 * this.cell_size
         this.ctx.beginPath()
         this.ctx.moveTo(x + radius, y)
@@ -104,7 +107,7 @@ export default class MineField extends TileMap {
     }
 
     draw_mine(x, y) {
-        if (this.animation[x + ',' + y] < 1) return
+        if (this.animation[x + ',' + y] < 0.2) return
         this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#dc2626')
         this.ctx.drawImage(
             BOMB_IMG,
@@ -116,7 +119,7 @@ export default class MineField extends TileMap {
     }
 
     draw_flag(x, y) {
-        this.ctx.globalAlpha = this.get_tween(x, y)
+        this.ctx.globalAlpha = this.beizer_curve(this.get_tween(x, y))
         this.ctx.drawImage(
             FLAG_IMG,
             (x + 0.25) * this.cell_size,
@@ -153,17 +156,8 @@ export default class MineField extends TileMap {
                 this.ctx.strokeStyle = '#262626'
                 this.ctx.lineWidth = 0.02 * this.cell_size
 
-                const tween = this.get_tween(x, y)
-                this.rounded_rectangle(
-                    x + 0.5 - 0.6 * tween,
-                    y + 0.5 - 0.6 * tween,
-                    1.2 * tween,
-                    1.2 * tween,
-                    0.1 * tween,
-                    '#262626'
-                )
-
-                if (tween < 1) continue
+                if (this.get_tween(x, y) < 0.2) continue
+                this.rounded_rectangle(x + 0.5 - 0.6, y + 0.5 - 0.6, 1.2, 1.2, 0.1, '#262626')
 
                 if (!this.explored(x + 1, y)) {
                     if (this.explored(x + 1, y - 1)) {
@@ -192,8 +186,9 @@ export default class MineField extends TileMap {
             if (cell.is_mine && cell.explored) this.draw_mine(x, y)
             else if (!cell.explored) this.draw_flag(x, y)
             else if (cell.mines > 0) {
+                if (this.get_tween(x, y) < 0.2) continue
                 this.ctx.fillStyle = COLORS[cell.mines]
-                const font_size = 0.6 * this.cell_size * this.get_tween(x, y)
+                const font_size = 0.6 * this.cell_size
                 this.ctx.font = font_size + 'px Arial'
                 this.ctx.textAlign = 'center'
                 this.ctx.textBaseline = 'middle'
@@ -204,7 +199,7 @@ export default class MineField extends TileMap {
 
     draw_borders(entries) {
         for (const [[x, y], cell] of entries) {
-            if (cell.explored && this.get_tween(x, y) >= 5 / 6) {
+            if (cell.explored && this.get_tween(x, y) >= 0.2) {
                 this.ctx.strokeStyle = '#737373'
                 this.ctx.lineCap = 'round'
                 this.ctx.lineWidth = 0.02 * this.cell_size
@@ -234,10 +229,43 @@ export default class MineField extends TileMap {
         }
     }
 
+    draw_overlay(entries) {
+        for (const [[x, y], cell] of entries) {
+            if (cell.explored) {
+                const tween = this.get_tween(x, y)
+                if (tween >= 1) continue
+                if (tween < 0.2) {
+                    const partial = this.beizer_curve(tween / 0.2)
+
+                    this.rounded_rectangle(
+                        x + 0.1 - 0.3 * partial,
+                        y + 0.1 - 0.3 * partial,
+                        0.8 + 0.6 * partial,
+                        0.8 + 0.6 * partial,
+                        0.1,
+                        '#fed7aa'
+                    )
+                } else {
+                    const partial = this.beizer_curve((tween - 0.2) / 0.8)
+
+                    this.rounded_rectangle(
+                        x - 0.2 + 0.7 * partial,
+                        y - 0.2 + 0.7 * partial,
+                        1.4 - 1.4 * partial,
+                        1.4 - 1.4 * partial,
+                        0.1,
+                        '#fed7aa'
+                    )
+                }
+            }
+        }
+    }
+
     draw_grid(entries) {
         this.draw_explored(entries)
         this.draw_symbol(entries)
         this.draw_borders(entries)
+        this.draw_overlay(entries)
         this.score_display.textContent = this.score
         if (this.game_over) this.canvas.classList.add('game-over')
     }
@@ -258,7 +286,7 @@ export default class MineField extends TileMap {
             this.animation[x + ',' + y] !== undefined &&
             this.data[x + ',' + y] !== undefined &&
             this.data[x + ',' + y].explored &&
-            this.animation[x + ',' + y] >= 1
+            this.animation[x + ',' + y] >= 0.2
         )
     }
 
@@ -284,7 +312,7 @@ export default class MineField extends TileMap {
         if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) return
 
         this.data[x + ',' + y].explored = true
-        this.animation[x + ',' + y] = -0.5 * Math.hypot(x - start_x, y - start_y)
+        this.animation[x + ',' + y] = -0.2 * Math.hypot(x - start_x, y - start_y)
         this.first_click = false
 
         if (this.data[x + ',' + y].is_mine) {

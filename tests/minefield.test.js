@@ -118,7 +118,7 @@ describe('MineField', () => {
         minefield.primary_action(0, 0)
         minefield.init(0.1)
 
-        await new Promise(resolve => setTimeout(resolve, 200))
+        await new Promise(resolve => setTimeout(resolve, 500))
 
         // Assert
         expect(minefield.score).toEqual(0)

@@ -299,6 +299,6 @@ describe('TileMap', () => {
         tilemap.draw(10)
 
         // Assert
-        expect(tilemap.animation['0,0']).toBe(10 / 200)
+        expect(tilemap.animation['0,0']).toBe(10 / tilemap.animation_duration)
     })
 })

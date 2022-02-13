@@ -4,7 +4,7 @@ export default class TileMap {
     cell_size = 80
     data = {}
     animation = {}
-    animation_duration = 200
+    animation_duration = 500
 
     prev_time = 0
 
