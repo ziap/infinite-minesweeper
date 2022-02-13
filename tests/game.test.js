@@ -13,6 +13,6 @@ describe('Game', () => {
         // Assert
         expect(game).toBeDefined()
         expect(game).toBeInstanceOf(Game)
-        expect(game.minefield.density).toEqual(0.25)
+        expect(game.minefield.density).toEqual(0.24)
     })
 })
