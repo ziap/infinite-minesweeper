@@ -156,7 +156,6 @@ export default class TileMap {
             }
             else {
                 is_dragging = true
-                sum_delta = [0, 0]
                 last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             }
             e.preventDefault()
