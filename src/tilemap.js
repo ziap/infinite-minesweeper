@@ -147,14 +147,19 @@ export default class TileMap {
         let sum_delta = [0, 0]
 
         this.canvas.addEventListener('touchend', e => {
+            is_dragging = false
             if (e.touches.length === 0) {
-                is_dragging = false
                 const max_abs = Math.max(sum_delta[0], sum_delta[1])
                 if (max_abs <= 10) {
                     this.interact(...last_touch_pos, 0)
                 }
-                e.preventDefault()
             }
+            else {
+                is_dragging = true
+                sum_delta = [0, 0]
+                last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
+            }
+            e.preventDefault()
         })
 
         let last_pinch_dist = 0
