@@ -147,12 +147,14 @@ export default class TileMap {
         let sum_delta = [0, 0]
 
         this.canvas.addEventListener('touchend', e => {
-            is_dragging = false
-            const max_abs = Math.max(sum_delta[0], sum_delta[1])
-            if (max_abs <= 10) {
-                this.interact(...last_touch_pos, 0)
+            if (e.touches.length === 0) {
+                is_dragging = false
+                const max_abs = Math.max(sum_delta[0], sum_delta[1])
+                if (max_abs <= 10) {
+                    this.interact(...last_touch_pos, 0)
+                }
+                e.preventDefault()
             }
-            e.preventDefault()
         })
 
         let last_pinch_dist = 0
@@ -163,11 +165,10 @@ export default class TileMap {
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 )
-            } else {
-                is_dragging = true
-                sum_delta = [0, 0]
-                last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             }
+            is_dragging = true
+            sum_delta = [0, 0]
+            last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             e.preventDefault()
         })
 

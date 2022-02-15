@@ -240,10 +240,6 @@ describe('TileMap', () => {
             tilemap.canvas.dispatchEvent(
                 new TouchEvent('touchend', {
                     touches: [
-                        {
-                            clientX: mouse_x,
-                            clientY: mouse_y
-                        }
                     ]
                 })
             )
