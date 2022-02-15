@@ -75,9 +75,9 @@ export default class TileMap {
             const canvas_pos_y = y * this.cell_size - this.center[1] + this.canvas.height / 2
 
             const canvas_pos_x_min = canvas_pos_x - this.cell_size
-            const canvas_pos_x_max = canvas_pos_x + this.cell_size
+            const canvas_pos_x_max = canvas_pos_x + this.cell_size * 2
             const canvas_pos_y_min = canvas_pos_y - this.cell_size
-            const canvas_pos_y_max = canvas_pos_y + this.cell_size
+            const canvas_pos_y_max = canvas_pos_y + this.cell_size * 2
 
             const canvas_pos_x_min_max = canvas_pos_x_min <= this.canvas.width && canvas_pos_x_max >= 0
             const canvas_pos_y_min_max = canvas_pos_y_min <= this.canvas.height && canvas_pos_y_max >= 0
