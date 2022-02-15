@@ -38,7 +38,7 @@ FLAG_IMG.src = `data:image/svg+xml; charset=utf8, ${encodeURIComponent(
 )}`
 
 export default class MineField extends TileMap {
-    uuid = ''
+    start_time = ''
     density = 0.25
     first_click = true
     game_over = false
@@ -271,7 +271,7 @@ export default class MineField extends TileMap {
     }
 
     init(new_density) {
-        this.uuid = crypto.randomUUID()
+        this.start_time = Date.now()
         this.density = new_density
         this.data = {}
         this.animation = {}
@@ -324,10 +324,10 @@ export default class MineField extends TileMap {
                 return
             }
 
-            const current_uuid = this.uuid
+            const current_uuid = this.start_time
 
             setTimeout(() => {
-                if (this.uuid === current_uuid) this.score++
+                if (this.start_time === current_uuid) this.score++
             }, (1 - this.animation[x + ',' + y]) * this.animation_duration)
 
             this.data[x + ',' + y].mines = 0

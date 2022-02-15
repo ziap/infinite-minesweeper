@@ -145,66 +145,85 @@ export default class TileMap {
         let last_touch_pos = [0, 0]
         let is_dragging = false
         let sum_delta = [0, 0]
+        let last_pinch_dist = 0
+
+        function get_touch_pos(touches) {
+            const touch_pos = [0, 0]
+            for (const touch of touches) {
+                touch_pos[0] += touch.clientX / touches.length
+                touch_pos[1] += touch.clientY / touches.length
+            }
+            return touch_pos
+        }
+
+        function get_pinch_dist(touches) {
+            let dist = 0
+            for (let i = 0; i < touches.length - 1; i++) {
+                for (let j = i + 1; j < touches.length; j++) {
+                    dist = Math.max(
+                        dist,
+                        Math.hypot(touches[i].clientX - touches[j].clientX, touches[i].clientY - touches[j].clientY)
+                    )
+                }
+            }
+            return dist
+        }
 
         this.canvas.addEventListener('touchend', e => {
-            is_dragging = false
+            last_touch_pos = [...get_touch_pos(e.touches)]
+            last_pinch_dist = 0
             if (e.touches.length === 0) {
-                const max_abs = Math.max(sum_delta[0], sum_delta[1])
-                if (max_abs <= 10) {
-                    this.interact(...last_touch_pos, 0)
+                is_dragging = false
+                if (Math.max(...sum_delta) <= 10) {
+                    this.interact(e.changedTouches[0].clientX, e.changedTouches[0].clientY, 0)
                 }
-            } else {
-                is_dragging = true
-                last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             }
+
             e.preventDefault()
         })
 
-        let last_pinch_dist = 0
         this.canvas.addEventListener('touchstart', e => {
-            this.cursor = null
-            if (e.touches.length > 1) {
-                last_pinch_dist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                )
-            }
             is_dragging = true
+            this.cursor = null
             sum_delta = [0, 0]
-            last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
+            last_touch_pos = [...get_touch_pos(e.touches)]
+            last_pinch_dist = get_pinch_dist(e.touches)
             e.preventDefault()
         })
 
         this.canvas.addEventListener('touchmove', e => {
-            if (e.touches.length > 1) {
-                const dist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                )
-                this.center[0] += e.touches[0].clientX - this.canvas.width / 2
-                this.center[1] += e.touches[0].clientY - this.canvas.height / 2
-                this.center[0] /= this.cell_size
-                this.center[1] /= this.cell_size
-                const delta = Math.abs(dist - last_pinch_dist)
-                sum_delta[0] += delta
-                sum_delta[1] += delta
-                if (last_pinch_dist > 0) this.cell_size *= dist / last_pinch_dist
-                this.cell_size = Math.max(this.cell_size, 10)
-                this.cell_size = Math.min(this.cell_size, 200)
-                this.center[0] *= this.cell_size
-                this.center[1] *= this.cell_size
-                this.center[0] -= e.touches[0].clientX - this.canvas.width / 2
-                this.center[1] -= e.touches[0].clientY - this.canvas.height / 2
-                last_pinch_dist = dist
-            } else {
-                last_pinch_dist = 0
+            if (is_dragging) {
+                const new_touch_pos = [...get_touch_pos(e.touches)]
+
+                this.center[0] -= new_touch_pos[0] - last_touch_pos[0]
+                this.center[1] -= new_touch_pos[1] - last_touch_pos[1]
+
+                const new_pinch_dist = get_pinch_dist(e.touches)
+
+                if (last_pinch_dist !== 0) {
+                    this.center[0] += new_touch_pos[0] - this.canvas.width / 2
+                    this.center[1] += new_touch_pos[1] - this.canvas.height / 2
+
+                    this.center[0] /= this.cell_size
+                    this.center[1] /= this.cell_size
+
+                    this.cell_size *= new_pinch_dist / last_pinch_dist
+                    this.cell_size = Math.max(this.cell_size, 10)
+                    this.cell_size = Math.min(this.cell_size, 200)
+
+                    this.center[0] *= this.cell_size
+                    this.center[1] *= this.cell_size
+
+                    this.center[0] -= new_touch_pos[0] - this.canvas.width / 2
+                    this.center[1] -= new_touch_pos[1] - this.canvas.height / 2
+                }
+                sum_delta[0] += Math.abs(new_touch_pos[0] - last_touch_pos[0])
+                sum_delta[1] += Math.abs(new_touch_pos[1] - last_touch_pos[1])
+
+                last_touch_pos[0] = new_touch_pos[0]
+                last_touch_pos[1] = new_touch_pos[1]
+                last_pinch_dist = new_pinch_dist
             }
-            if (!is_dragging) return
-            this.center[0] -= e.touches[0].clientX - last_touch_pos[0]
-            this.center[1] -= e.touches[0].clientY - last_touch_pos[1]
-            sum_delta[0] += Math.abs(e.touches[0].clientX - last_touch_pos[0])
-            sum_delta[1] += Math.abs(e.touches[0].clientY - last_touch_pos[1])
-            last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             e.preventDefault()
         })
     }
