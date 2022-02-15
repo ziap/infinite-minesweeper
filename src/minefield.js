@@ -295,7 +295,7 @@ export default class MineField extends TileMap {
         return this.data[x + ',' + y].is_mine
     }
 
-    explore(x, y, start_x = x, start_y = y) {
+    explore(x, y) {
         if (this.data[x + ',' + y] === undefined) {
             if (this.first_click) {
                 const rest_mines = Math.min((25 * this.density) / 16, 1)
@@ -309,42 +309,49 @@ export default class MineField extends TileMap {
                 }
             } else this.is_mine(x, y)
         }
-        if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) return
 
-        this.data[x + ',' + y].explored = true
-        this.animation[x + ',' + y] = -0.2 * Math.hypot(x - start_x, y - start_y)
-        this.first_click = false
+        const queue = [[x, y, 0]]
 
-        if (this.data[x + ',' + y].is_mine) {
-            this.game_over = true
-            return
-        }
+        while (queue.length > 0) {
+            const [x, y, depth] = queue.shift()
 
-        const current_uuid = this.uuid
+            if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) continue
+            this.data[x + ',' + y].explored = true
+            this.animation[x + ',' + y] = -0.2 * depth + (this.first_click ? 0.2 : 0)
 
-        setTimeout(() => {
-            if (this.uuid === current_uuid) this.score++
-        }, (1 - this.animation[x + ',' + y]) * this.animation_duration)
-
-        this.data[x + ',' + y].mines = 0
-
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) continue
-                if (this.is_mine(x + i, y + j)) {
-                    this.data[x + ',' + y].mines++
-                }
+            if (this.data[x + ',' + y].is_mine) {
+                this.game_over = true
+                return
             }
-        }
 
-        if (this.data[x + ',' + y].mines === 0) {
+            const current_uuid = this.uuid
+
+            setTimeout(() => {
+                if (this.uuid === current_uuid) this.score++
+            }, (1 - this.animation[x + ',' + y]) * this.animation_duration)
+
+            this.data[x + ',' + y].mines = 0
+
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (i === 0 && j === 0) continue
-                    this.explore(x + i, y + j, start_x, start_y)
+                    if (this.is_mine(x + i, y + j)) {
+                        this.data[x + ',' + y].mines++
+                    }
+                }
+            }
+
+            if (this.data[x + ',' + y].mines === 0) {
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i === 0 && j === 0) continue
+                        queue.push([x + i, y + j, depth + 1])
+                    }
                 }
             }
         }
+
+        this.first_click = false
     }
 
     flag(x, y) {

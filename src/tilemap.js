@@ -153,8 +153,7 @@ export default class TileMap {
                 if (max_abs <= 10) {
                     this.interact(...last_touch_pos, 0)
                 }
-            }
-            else {
+            } else {
                 is_dragging = true
                 last_touch_pos = [e.touches[0].clientX, e.touches[0].clientY]
             }

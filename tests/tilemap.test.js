@@ -239,8 +239,7 @@ describe('TileMap', () => {
 
             tilemap.canvas.dispatchEvent(
                 new TouchEvent('touchend', {
-                    touches: [
-                    ]
+                    touches: []
                 })
             )
 

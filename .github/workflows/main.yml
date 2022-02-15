@@ -1,4 +1,4 @@
-name: Unit
+name: unit
 
 on:
     push:
@@ -21,5 +21,8 @@ jobs:
             - name: Build the project
               run: npm run build
 
-            - name: Test the project
+            - name: Run test
               run: npm run test
+
+            - name: ESLint
+              run: npm run lint
