@@ -61,15 +61,32 @@ export default class MineField extends TileMap {
     }
 
     primary_action(x, y) {
-        const invert = this.invert_button.checked
         if (this.game_over) this.init(this.density)
-        else invert && !this.first_click ? this.flag(x, y) : this.explore(x, y)
+        else {
+            if (this.data[x + ',' + y] !== undefined && this.data[x + ',' + y].explored) {
+                let flagged = 0
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (this.data[x + i + ',' + (y + j)].flagged) flagged++
+                    }
+                }
+                if (flagged === this.data[x + ',' + y].mines) {
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            this.explore(x + i, y + j)
+                        }
+                    }
+                }
+            } else {
+                if (this.invert_button.checked && !this.first_click) this.flag(x, y)
+                else this.explore(x, y)
+            }
+        }
     }
 
     secondary_action(x, y) {
-        const invert = this.invert_button.checked
         if (this.game_over) this.init(this.density)
-        else invert || this.first_click ? this.explore(x, y) : this.flag(x, y)
+        else this.first_click ? this.explore(x, y) : this.flag(x, y)
     }
 
     get_tween(x, y) {

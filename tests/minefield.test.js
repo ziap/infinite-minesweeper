@@ -110,6 +110,8 @@ describe('MineField', () => {
         expect(minefield.data['0,3'].flagged).toEqual(true)
     })
 
+    it.todo('Can click tile to open all adjacent tiles')
+
     it('Can restart', async () => {
         // Arrange
         const minefield = new MineField(0.125)
