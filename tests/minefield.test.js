@@ -23,8 +23,8 @@ describe('MineField', () => {
         minefield.primary_action(0, 0)
 
         // Assert
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
+        for (const i of [-1, 0, 1]) {
+            for (const j of [-1, 0, 1]) {
                 expect(minefield.data[i + ',' + j]).toBeDefined()
                 expect(minefield.data[i + ',' + j].is_mine).toEqual(false)
             }
@@ -110,7 +110,33 @@ describe('MineField', () => {
         expect(minefield.data['0,3'].flagged).toEqual(true)
     })
 
-    it.todo('Can click tile to open all adjacent tiles')
+    it('Can click tile to open all adjacent tiles', () => {
+        // Arrange
+        const minefield = new MineField(0.25)
+
+        minefield.data = {
+            '0,0': { is_mine: false, explored: true, flagged: false, mines: 1 },
+            '0,1': { is_mine: true, explored: false, flagged: true },
+            '0,-1': { is_mine: false, explored: false, flagged: false },
+            '1,0': { is_mine: false, explored: false, flagged: false },
+            '1,1': { is_mine: false, explored: false, flagged: false },
+            '1,-1': { is_mine: false, explored: false, flagged: false },
+            '-1,0': { is_mine: false, explored: false, flagged: false },
+            '-1,1': { is_mine: false, explored: false, flagged: false },
+            '-1,-1': { is_mine: false, explored: false, flagged: false }
+        }
+
+        // Act
+        minefield.primary_action(0, 0)
+
+        // Assert
+        for (const i of [-1, 0, 1]) {
+            for (const j of [-1, 0, 1]) {
+                const cell = minefield.data[i + ',' + j]
+                expect(cell.explored || cell.flagged).toEqual(true)
+            }
+        }
+    })
 
     it('Can restart', async () => {
         // Arrange
