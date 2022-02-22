@@ -64,12 +64,39 @@ header {
     padding: 1.25rem;
     background: #262626;
     fill: #fff;
-    transition: fill 200ms ease-in-out, background 200ms ease-in-out;
+    transition: fill 200ms ease-in-out, background 200ms ease-in-out, transform 200ms ease-in-out;
 }
 
-#invert:checked + .fa {
+[type='checkbox']:checked ~ .fa {
     fill: #262626;
     background: #fed7aa;
+}
+
+#menu:checked ~ .fa {
+    transform: rotate(180deg);
+}
+
+#menu-container {
+    display: unset;
+    position: fixed;
+    top: 5.6rem;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    max-width: 48rem;
+    background: #262626;
+    transition: left 200ms ease-in-out;
+
+    opacity: 0.9;
+}
+
+#menu-container.hide {
+    left: -100%;
+    display: unset;
+}
+
+.hide {
+    display: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -78,7 +105,7 @@ header {
         background: #525252;
     }
 
-    .btn:hover > #invert:checked + .fa {
+    .btn:hover > [type='checkbox']:checked + .fa {
         fill: #262626;
         background: #fff;
     }
