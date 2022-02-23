@@ -1,8 +1,7 @@
 import MineField from '../src/minefield.js'
-import crypto from 'crypto'
 import { jest } from '@jest/globals'
 
-window.crypto = crypto
+window.HTMLMediaElement.prototype.play = () => {}
 
 describe('MineField', () => {
     it('Can be instantiated', () => {

@@ -1,5 +1,5 @@
 import TileMap from './tilemap.js'
-import { BOMB_IMG, FLAG_IMG } from './assets.js'
+import { BOMB_IMG, FLAG_IMG, FLAG_AUDIO, CLEAR_AUDIO } from './assets.js'
 
 class Cell {
     explored = false
@@ -309,13 +309,16 @@ export default class MineField extends TileMap {
 
         const queue = [[x, y, 0]]
 
+        if (!this.data[x + ',' + y].explored && !this.data[x + ',' + y].flagged) {
+            CLEAR_AUDIO.cloneNode(true).play()
+        }
+
         while (queue.length > 0) {
             const [x, y, depth] = queue.shift()
 
             if (this.data[x + ',' + y].explored || this.data[x + ',' + y].flagged) continue
             this.data[x + ',' + y].explored = true
             this.animation[x + ',' + y] = -0.2 * depth + (this.first_click ? 0.2 : 0)
-
             if (this.data[x + ',' + y].is_mine) {
                 this.game_over = true
                 return
@@ -350,6 +353,7 @@ export default class MineField extends TileMap {
     flag(x, y) {
         if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(false, false)
         if (!this.data[x + ',' + y].explored) {
+            FLAG_AUDIO.cloneNode(true).play()
             this.data[x + ',' + y].flagged = !this.data[x + ',' + y].flagged
             if (this.animation[x + ',' + y] === undefined) this.animation[x + ',' + y] = 0
             else this.animation[x + ',' + y] = 1 - this.animation[x + ',' + y]

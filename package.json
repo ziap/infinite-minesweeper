@@ -10,7 +10,7 @@
         "dev": "vite dev",
         "build": "vite build",
         "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --coverage",
-        "format": "prettier --write {src,tests}/**",
+        "format": "prettier --write {src,tests}/**.{html,js,css}",
         "lint": "eslint --fix src",
         "gh-pages": "gh-pages -d dist"
     },

@@ -3,7 +3,12 @@ import crypto from 'crypto'
 
 window.crypto = crypto
 
-window.document.body.innerHTML = '<div id="grid"></div><div id="invert"></div><div id="score"></div>'
+window.document.body.innerHTML = `
+    <div id="menu"></div>
+    <div id="grid"></div>
+    <div id="invert"></div>
+    <div id="score"></div>
+`
 
 describe('Game', () => {
     it('Can be instantiated', () => {
