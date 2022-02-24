@@ -16,29 +16,29 @@ export default class Game {
         const leaderboard = document.querySelector('#leaderboard')
         const settings = document.querySelector('#settings')
 
-        let current_screen = main_menu
+        this.current_screen = main_menu
 
-        function addListenerToList(query, inputType, callbackFunction) {
-            for (const element of document.querySelectorAll(query)) {
-                element.addEventListener(inputType, callbackFunction)
-            }
-        }
-
-        function show_screen(next_screen) {
-            return () => {
-                current_screen.classList.add('hide')
-                next_screen.classList.remove('hide')
-                current_screen = next_screen
-            }
-        }
-
-        addListenerToList('.show_game_config', 'click', show_screen(game_config))
-        addListenerToList('.show_settings', 'click', show_screen(settings))
-        addListenerToList('.show_leaderboard', 'click', show_screen(leaderboard))
-        addListenerToList('.return_to_menu', 'click', show_screen(main_menu))
+        this.listen('.show_game_config', 'click', this.show_screen(game_config))
+        this.listen('.show_settings', 'click', this.show_screen(settings))
+        this.listen('.show_leaderboard', 'click', this.show_screen(leaderboard))
+        this.listen('.return_to_menu', 'click', this.show_screen(main_menu))
 
         document.getElementById('grid').replaceWith(this.minefield.canvas)
         document.getElementById('invert').replaceWith(this.minefield.invert_button)
         document.getElementById('score').replaceWith(this.minefield.score_display)
+    }
+
+    show_screen(next_screen) {
+        return () => {
+            this.current_screen.classList.add('hide')
+            next_screen.classList.remove('hide')
+            this.current_screen = next_screen
+        }
+    }
+
+    listen(query, input, callback) {
+        for (const element of document.querySelectorAll(query)) {
+            element.addEventListener(input, callback)
+        }
     }
 }

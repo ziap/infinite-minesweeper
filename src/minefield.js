@@ -41,6 +41,7 @@ export default class MineField extends TileMap {
     }
 
     primary_action(x, y) {
+        const audio = CLEAR_AUDIO.cloneNode(true)
         if (this.game_over) this.init(this.density)
         else {
             if (this.data[x + ',' + y] !== undefined && this.data[x + ',' + y].explored) {
@@ -53,20 +54,20 @@ export default class MineField extends TileMap {
                 if (flagged === this.data[x + ',' + y].mines) {
                     for (let i = -1; i <= 1; i++) {
                         for (let j = -1; j <= 1; j++) {
-                            this.explore(x + i, y + j)
+                            this.explore(x + i, y + j, audio)
                         }
                     }
                 }
             } else {
                 if (this.invert_button.checked && !this.first_click) this.flag(x, y)
-                else this.explore(x, y)
+                else this.explore(x, y, audio)
             }
         }
     }
 
     secondary_action(x, y) {
         if (this.game_over) this.init(this.density)
-        else this.first_click ? this.explore(x, y) : this.flag(x, y)
+        else this.first_click ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true)) : this.flag(x, y)
     }
 
     get_tween(x, y) {
@@ -292,7 +293,7 @@ export default class MineField extends TileMap {
         return this.data[x + ',' + y].is_mine
     }
 
-    explore(x, y) {
+    explore(x, y, audio) {
         if (this.data[x + ',' + y] === undefined) {
             if (this.first_click) {
                 const rest_mines = Math.min((25 * this.density) / 16, 1)
@@ -310,7 +311,7 @@ export default class MineField extends TileMap {
         const queue = [[x, y, 0]]
 
         if (!this.data[x + ',' + y].explored && !this.data[x + ',' + y].flagged) {
-            CLEAR_AUDIO.cloneNode(true).play()
+            audio.play()
         }
 
         while (queue.length > 0) {
