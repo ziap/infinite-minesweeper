@@ -2,8 +2,6 @@
 
 Minesweeper on an infinite board
 
-![Preview](logo.png)
-
 ## Design goals
 
 We want the game to be tiny, simple, and accessible.
