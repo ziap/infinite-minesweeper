@@ -60,7 +60,7 @@ Earn points by revealing tiles without a mine.
 | Mobile support               | Local leaderboard          |                   |
 | Animations                   |                            |                   |
 | SFX                          |                            |                   |
-| Menu system                  |
+| Menu system                  |                            |                   |
 
 **:bulb: May or may not be implemented**
 
