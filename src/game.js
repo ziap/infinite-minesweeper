@@ -31,6 +31,8 @@ export default class Game {
         checker.addEventListener('input', e => {
             if (e.target.checked) container.classList.remove('hide')
             else container.classList.add('hide')
+
+            this.show_screen(main_menu)()
         })
 
         game_config.addEventListener('submit', e => {

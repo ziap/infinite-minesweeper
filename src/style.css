@@ -86,17 +86,13 @@ header {
     max-width: 48rem;
     background: #262626;
     transition: left 200ms ease-in-out;
-
-    opacity: 0.9;
+    overflow: hidden;
+    opacity: 0.96;
 }
 
 #menu-container.hide {
     left: -100%;
-    display: unset;
-}
-
-.hide {
-    display: none;
+    display: unset !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -117,4 +113,60 @@ header {
     color: #fff;
     font-weight: 400;
     user-select: none;
+}
+
+.submenu {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 1.3rem;
+}
+
+.menu-button {
+    font-size: 1.3rem;
+    padding: 0;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    color: #fff;
+}
+
+.menu-button:hover {
+    color: #fed7aa;
+}
+
+#main-menu > .menu-button {
+    font-size: 1.6rem;
+    margin: 0.6em 0;
+}
+
+.hide {
+    display: none !important;
+}
+
+fieldset {
+    margin-bottom: 2em;
+    border: solid 2px #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+legend {
+    background: #fff;
+    padding: 0.25em 0.5em;
+}
+
+.submenu label {
+    color: #fff;
+    padding: 0.2em 0;
+}
+
+.submenu > section {
+    display: flex;
+    justify-content: space-between;
 }

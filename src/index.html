@@ -32,37 +32,37 @@
                     </svg>
                 </label>
                 <div id="menu-container" class="hide">
-                    <section id="main-menu">
-                        <input type="button" class="show-game-config" value="new game" />
-                        <input type="button" class="show-leaderboard" value="leaderboard" />
-                        <input type="button" class="show-settings" value="settings" />
-                    </section>
-                    <form id="game-config" class="hide">
-                        <section>
-                            <p>Select game mode:</p>
+                    <form class="submenu" id="main-menu">
+                        <input type="button" class="menu-button show-game-config" value="new game" />
+                        <input type="button" class="menu-button show-leaderboard" value="leaderboard" />
+                        <input type="button" class="menu-button show-settings" value="settings" />
+                    </form>
+                    <form class="submenu hide" id="game-config">
+                        <fieldset>
+                            <legend>Select game mode</legend>
                             <label><input type="radio" value="casual" name="gamemode" checked /> Casual</label>
-                            <label><input type="radio" value="blitz" name="gamemode" /> Blitz</label>
-                            <label><input type="radio" value="500-tiles" name="gamemode" /> 500 tiles</label>
-                        </section>
-                        <section>
-                            <p>Select difficulty:</p>
+                            <label><input type="radio" value="blitz" name="gamemode" disabled /> Blitz</label>
+                            <label><input type="radio" value="500-tiles" name="gamemode" disabled /> 500 tiles</label>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Select difficulty</legend>
                             <label><input type="radio" value="easy" name="difficulty" /> Easy</label>
                             <label><input type="radio" value="normal" name="difficulty" checked /> Normal</label>
                             <label><input type="radio" value="hard" name="difficulty" /> Hard</label>
-                        </section>
+                        </fieldset>
                         <section>
-                            <input type="submit" class="start-game" value="start" />
-                            <input type="button" class="return-to-menu" value="return" />
-                        </section>
-                    </form>
-                    <form id="leaderboard" class="hide">
-                        <section>
-                            <input type="button" class="return-to-menu" value="return" />
+                            <input type="submit" class="menu-button start-game" value="start" />
+                            <input type="button" class="menu-button return-to-menu" value="return" />
                         </section>
                     </form>
-                    <form id="settings" class="hide">
+                    <form class="submenu hide" id="leaderboard">
                         <section>
-                            <input type="button" class="return-to-menu" value="return" />
+                            <input type="button" class="menu-button return-to-menu" value="return" />
+                        </section>
+                    </form>
+                    <form class="submenu hide" id="settings">
+                        <section>
+                            <input type="button" class="menu-button return-to-menu" value="return" />
                         </section>
                     </form>
                 </div>
