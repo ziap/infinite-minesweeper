@@ -1,15 +1,14 @@
 import Game from '../src/game.js'
 
 document.body.innerHTML = `
-    <input type="checkbox" id="menu-checker">
-    <div id="menu-container"></div>
-    <div id="main-menu">
-        <button class="show-game-config"></button>
-        <button class="show-leaderboard"></button>
-        <button class="show-settings"></button>
-        <button class="return-to-menu"></button>
-    </div>
-    <div id="game-config">
+    <input type="checkbox" id="menu-checker" />
+    <div id="menu-container">
+        <div id="main-menu">
+            <button class="show-game-config"></button>
+            <button class="show-leaderboard"></button>
+            <button class="show-settings"></button>
+            <button class="return-to-menu"></button>
+        </div>
         <form id="game-config">
             <fieldset>
                 <legend>Select game mode</legend>
@@ -27,9 +26,9 @@ document.body.innerHTML = `
                 <input type="submit" value="start" />
             </section>
         </form>
+        <div id="leaderboard"></div>
+        <div id="settings"></div>
     </div>
-    <div id="leaderboard"></div>
-    <div id="settings"></div>
     <div id="grid"></div>
     <div id="invert"></div>
     <div id="score"></div>
