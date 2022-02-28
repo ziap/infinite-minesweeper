@@ -10,7 +10,7 @@
         <script type="module">
             import Game from './game.js'
 
-            new Game(0.2)
+            new Game()
         </script>
     </head>
 
@@ -24,55 +24,47 @@
         </div>
         <div class="header-bg">
             <header>
-                <label for="menu" class="btn">
-                    <input type="checkbox" id="menu" hidden />
+                <label for="menu-checker" class="btn">
+                    <input type="checkbox" id="menu-checker" hidden />
                     <svg class="fa" viewBox="0 0 256 512">
                         <path
                             d="M118.6 105.4l128 127.1C252.9 239.6 256 247.8 256 255.1s-3.125 16.38-9.375 22.63l-128 127.1c-9.156 9.156-22.91 11.9-34.88 6.943S64 396.9 64 383.1V128c0-12.94 7.781-24.62 19.75-29.58S109.5 96.23 118.6 105.4z" />
                     </svg>
                 </label>
                 <div id="menu-container" class="hide">
-                    <section id="main_menu">
-                        <input type="button" class="show_game_config" value="new game" />
-                        <input type="button" class="show_leaderboard" value="leaderboard" />
-                        <input type="button" class="show_settings" value="settings" />
+                    <section id="main-menu">
+                        <input type="button" class="show-game-config" value="new game" />
+                        <input type="button" class="show-leaderboard" value="leaderboard" />
+                        <input type="button" class="show-settings" value="settings" />
                     </section>
-                    <section id="game_config" class="hide">
-                        <section id="game_modes">
-                            <p>select game mode:</p>
-                            <input type="radio" id="casual" name="game_mode" />
-                            <label for="casual">casual</label>
-                            <input type="radio" id="casual" name="game_mode" />
-                            <label for="casual">casual</label>
-                            <input type="radio" id="casual" name="game_mode" />
-                            <label for="casual">casual</label>
-                            <input type="radio" id="casual" name="game_mode" />
-                            <label for="casual">casual</label>
-                        </section>
-                        <section id="difficulties">
-                            <p>select difficulty:</p>
-                            <input type="radio" id="easy" name="difficulty" />
-                            <label for="easy">easy</label>
-                            <input type="radio" id="medium" name="difficulty" />
-                            <label for="medium">medium</label>
-                            <input type="radio" id="hard" name="difficulty" />
-                            <label for="hard">hard</label>
+                    <form id="game-config" class="hide">
+                        <section>
+                            <p>Select game mode:</p>
+                            <label><input type="radio" value="casual" name="gamemode" checked /> Casual</label>
+                            <label><input type="radio" value="blitz" name="gamemode" /> Blitz</label>
+                            <label><input type="radio" value="500-tiles" name="gamemode" /> 500 tiles</label>
                         </section>
                         <section>
-                            <input type="button" class="start_game" value="start" />
-                            <input type="button" class="return_to_menu" value="return" />
+                            <p>Select difficulty:</p>
+                            <label><input type="radio" value="easy" name="difficulty" /> Easy</label>
+                            <label><input type="radio" value="normal" name="difficulty" checked /> Normal</label>
+                            <label><input type="radio" value="hard" name="difficulty" /> Hard</label>
                         </section>
-                    </section>
-                    <section id="leaderboard" class="hide">
                         <section>
-                            <input type="button" class="return_to_menu" value="return" />
+                            <input type="submit" class="start-game" value="start" />
+                            <input type="button" class="return-to-menu" value="return" />
                         </section>
-                    </section>
-                    <section id="settings" class="hide">
+                    </form>
+                    <form id="leaderboard" class="hide">
                         <section>
-                            <input type="button" class="return_to_menu" value="return" />
+                            <input type="button" class="return-to-menu" value="return" />
                         </section>
-                    </section>
+                    </form>
+                    <form id="settings" class="hide">
+                        <section>
+                            <input type="button" class="return-to-menu" value="return" />
+                        </section>
+                    </form>
                 </div>
                 <div id="score">0</div>
                 <label for="invert" class="btn">

@@ -1,31 +1,45 @@
 import MineField from './minefield.js'
 
+const DIFFICULTY = {
+    easy: 1 / 6,
+    normal: 1 / 5,
+    hard: 1 / 4
+}
+
 export default class Game {
-    constructor(density) {
-        this.minefield = new MineField(density)
+    constructor() {
+        this.minefield = new MineField(DIFFICULTY.normal)
 
-        document.querySelector('#menu').addEventListener('input', e => {
-            const container = document.querySelector('#menu-container')
-
-            if (e.target.checked) container.classList.remove('hide')
-            else container.classList.add('hide')
-        })
-
-        const main_menu = document.querySelector('#main_menu')
-        const game_config = document.querySelector('#game_config')
+        const checker = document.querySelector('#menu-checker')
+        const container = document.querySelector('#menu-container')
+        const main_menu = document.querySelector('#main-menu')
+        const game_config = document.querySelector('#game-config')
         const leaderboard = document.querySelector('#leaderboard')
         const settings = document.querySelector('#settings')
 
         this.current_screen = main_menu
 
-        this.listen('.show_game_config', 'click', this.show_screen(game_config))
-        this.listen('.show_settings', 'click', this.show_screen(settings))
-        this.listen('.show_leaderboard', 'click', this.show_screen(leaderboard))
-        this.listen('.return_to_menu', 'click', this.show_screen(main_menu))
+        this.listen('.show-game-config', 'click', this.show_screen(game_config))
+        this.listen('.show-settings', 'click', this.show_screen(settings))
+        this.listen('.show-leaderboard', 'click', this.show_screen(leaderboard))
+        this.listen('.return-to-menu', 'click', this.show_screen(main_menu))
 
         document.getElementById('grid').replaceWith(this.minefield.canvas)
         document.getElementById('invert').replaceWith(this.minefield.invert_button)
         document.getElementById('score').replaceWith(this.minefield.score_display)
+
+        checker.addEventListener('input', e => {
+            if (e.target.checked) container.classList.remove('hide')
+            else container.classList.add('hide')
+        })
+
+        game_config.addEventListener('submit', e => {
+            const config = new FormData(e.target)
+            this.minefield.init(DIFFICULTY[config.get('difficulty')])
+            checker.checked = false
+            container.classList.add('hide')
+            e.preventDefault()
+        })
     }
 
     show_screen(next_screen) {
