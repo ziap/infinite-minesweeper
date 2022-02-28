@@ -83,7 +83,7 @@ header {
     left: 0;
     bottom: 0;
     width: 100vw;
-    max-width: 48rem;
+    max-width: 32rem;
     background: #262626;
     transition: left 200ms ease-in-out;
     overflow: hidden;

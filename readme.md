@@ -55,11 +55,12 @@ Earn points by revealing tiles without a mine.
 
 | :ballot_box_with_check: Done | :construction: In progress | :pushpin: Planned |
 | ---------------------------- | -------------------------- | ----------------- |
-| 2D infinite scrolling grid   | Menu system                | High scores       |
-| Randomly placed mines        | Multiple game modes        | Local leaderboard |
-| Mobile support               |                            | PWA support       |
+| 2D infinite scrolling grid   | Multiple game modes        | PWA support       |
+| Randomly placed mines        | High scores                |                   |
+| Mobile support               | Local leaderboard          |                   |
 | Animations                   |                            |                   |
 | SFX                          |                            |                   |
+| Menu system                  |
 
 **:bulb: May or may not be implemented**
 
