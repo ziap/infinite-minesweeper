@@ -3,7 +3,6 @@ const FLAG_IMG = new Image()
 
 const FLAG_AUDIO = new Audio('./flag.mp3')
 const CLEAR_AUDIO = new Audio('./clear.mp3')
-//const BOMB_AUDIO = new Audio
 
 BOMB_IMG.src = `data:image/svg+xml; charset=utf8, ${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

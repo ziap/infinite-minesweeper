@@ -1,6 +1,11 @@
 import TileMap from './tilemap.js'
 import { BOMB_IMG, FLAG_IMG, FLAG_AUDIO, CLEAR_AUDIO } from './assets.js'
 
+/**
+ * Store the data of a cell.
+ * Might implement bitboard representation later for efficiency.
+ * Still wondering if bitboard representation and getters/setters are more efficient than object representation.
+ */
 class Cell {
     explored = false
     is_mine = false
@@ -18,6 +23,12 @@ class Cell {
  */
 const COLORS = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15', '#2dd4bf', '#ffffff', '#a3a3a3']
 
+/**
+ * The class representing a minefield.
+ * It is responsible for creating the grid, handling most of the game logic, and drawing the grid.
+ * It also creates and hydrates the inverse button and score display.
+ * @extends TileMap
+ */
 export default class MineField extends TileMap {
     density = 0.25
     first_click = true
@@ -40,17 +51,30 @@ export default class MineField extends TileMap {
         this.init(new_density)
     }
 
+    /**
+     * Handle the left (primary) click on a cell.
+     * Also restart the game if it's over.
+     * @param {number} x
+     * @param {number} y
+     */
     primary_action(x, y) {
+        // Clone the audio element to avoid multiple audio elements playing at the same time causing earrape.
         const audio = CLEAR_AUDIO.cloneNode(true)
         if (this.game_over) this.init(this.density)
         else {
             if (this.data[x + ',' + y] !== undefined && this.data[x + ',' + y].explored) {
+                // The cell is already explored.
+
+                // Count the number of adjacent cells that are flagged.
                 let flagged = 0
                 for (let i = -1; i <= 1; i++) {
                     for (let j = -1; j <= 1; j++) {
                         if (this.data[x + i + ',' + (y + j)].flagged) flagged++
                     }
                 }
+
+                // If the number of flagged cells is equal to the number of mines, then clear the adjacent cells.
+                // Note that if the cells are incorrectly flagged, this will click a mine and lose the game.
                 if (flagged === this.data[x + ',' + y].mines) {
                     for (let i = -1; i <= 1; i++) {
                         for (let j = -1; j <= 1; j++) {
@@ -58,18 +82,36 @@ export default class MineField extends TileMap {
                         }
                     }
                 }
+
+                // TODO: Highlight the adjacent unexplored cells if the number of them aren't equal to the number of mines.
             } else {
+                // If inverse is checked, flag the cell (mainly for mobile).
+                // First click is always a primary action whether or not inverse is checked.
                 if (this.invert_button.checked && !this.first_click) this.flag(x, y)
                 else this.explore(x, y, audio)
             }
         }
     }
 
+    /**
+     * Simply flag the cell if it isn't already explored and restart the game if it's over.
+     * @param {number} x
+     * @param {number} y
+     */
     secondary_action(x, y) {
         if (this.game_over) this.init(this.density)
         else this.first_click ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true)) : this.flag(x, y)
     }
 
+    /**
+     * Get the animation frame for the cell.
+     * The tilemap have already prevented the frame from going higher than 1
+     * so we can just prevent the frame from going lower than 0.
+     * May need to change the way it handles the animation later.
+     * @param {number} x
+     * @param {number} y
+     * @returns {number} The animation frame
+     */
     get_tween(x, y) {
         let tween = 1
         if (this.animation[x + ',' + y] !== undefined) tween = Math.max(0, this.animation[x + ',' + y])
@@ -78,11 +120,23 @@ export default class MineField extends TileMap {
         return tween
     }
 
-    beizer_curve(x) {
+    /**
+     * The bezier curve function to ease the animation.
+     * @param {number} x The animation frame
+     * @returns {number} The eased value of the animation frame
+     */
+    bezier(x) {
         return x * x * (3 - 2 * x)
     }
 
-    // Draw a rounded rectangle from point x, y to point x1, y1 with radius r
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} width
+     * @param {number} height
+     * @param {number} radius
+     * @param {string} color
+     */
     rounded_rectangle(x, y, width, height, radius, color) {
         x *= this.cell_size
         y *= this.cell_size
@@ -104,6 +158,10 @@ export default class MineField extends TileMap {
         this.ctx.stroke()
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     draw_mine(x, y) {
         if (this.animation[x + ',' + y] < 0.2) return
         this.rounded_rectangle(x + 0.1, y + 0.1, 0.8, 0.8, 0.1, '#dc2626')
@@ -116,8 +174,12 @@ export default class MineField extends TileMap {
         )
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     draw_flag(x, y) {
-        const tween = this.beizer_curve(this.get_tween(x, y))
+        const tween = this.bezier(this.get_tween(x, y))
         this.ctx.globalAlpha = tween
         this.ctx.drawImage(
             FLAG_IMG,
@@ -129,6 +191,13 @@ export default class MineField extends TileMap {
         this.ctx.globalAlpha = 1
     }
 
+    /**
+     * Draw a rounded corner at the intersection of two diagonal adjacent cells.
+     * @param {number} x
+     * @param {number} y
+     * @param {number} x1
+     * @param {number} y1
+     */
     draw_corner(x, y, x1, y1) {
         this.ctx.fillStyle = '#262626'
         this.ctx.strokeStyle = '#262626'
@@ -148,6 +217,10 @@ export default class MineField extends TileMap {
         this.ctx.stroke()
     }
 
+    /**
+     * Draw the background of the explored cells.
+     * @param {[[number, number], Cell][]} entries The cells that need to be drawn
+     */
     draw_explored(entries) {
         for (const [[x, y], cell] of entries) {
             if (cell.explored) {
@@ -158,6 +231,7 @@ export default class MineField extends TileMap {
                 if (this.get_tween(x, y) < 0.2) continue
                 this.rounded_rectangle(x + 0.5 - 0.6, y + 0.5 - 0.6, 1.2, 1.2, 0.1, '#262626')
 
+                // If there is an adjacent diagonal cell that is also explored, draw a rounded corner.
                 if (!this.explored(x + 1, y)) {
                     if (this.explored(x + 1, y - 1)) {
                         this.draw_corner(x + 1.1, y + 0.2, x + 1.2, y + 0.1)
@@ -180,6 +254,11 @@ export default class MineField extends TileMap {
         }
     }
 
+    /**
+     * Draw the symbols of the cells.
+     * A symbol is either a number, a flag, or a mine.
+     * @param {[[number, number], Cell][]} entries The cells that need to be drawn
+     */
     draw_symbol(entries) {
         for (const [[x, y], cell] of entries) {
             if (cell.is_mine && cell.explored) this.draw_mine(x, y)
@@ -196,6 +275,11 @@ export default class MineField extends TileMap {
         }
     }
 
+    /**
+     * Draw borders around an explored cells.
+     * Does not draw borders if the animation is still in the first stage.
+     * @param {[[number, number], Cell][]} entries
+     */
     draw_borders(entries) {
         for (const [[x, y], cell] of entries) {
             if (cell.explored && this.get_tween(x, y) >= 0.2) {
@@ -228,13 +312,25 @@ export default class MineField extends TileMap {
         }
     }
 
+    /**
+     * Draw an overlay over the cells with unfinished animation.
+     * Essentially, this is the animation of the cells being revealed.
+     * @param {[[number, number], Cell][]} entries
+     */
     draw_overlay(entries) {
         for (const [[x, y], cell] of entries) {
             if (cell.explored) {
                 const tween = this.get_tween(x, y)
                 if (tween >= 1) continue
+
+                // The animation is split into two stages:
+                // 1. In the first stage, the cell gets bigger, overlapping the adjacent cells,
+                //    hiding the fact that we haven't made the animations for the rounded corner and shit.
+                // 2. In the second stage, the cell gets smaller until it completely disappears,
+                //    showing the mine if there is one, and the number of adjacent mines otherwise.
+                // Of course this looks like shit, but idk how to do it better.
                 if (tween < 0.2) {
-                    const partial = this.beizer_curve(tween / 0.2)
+                    const partial = this.bezier(tween / 0.2)
 
                     this.rounded_rectangle(
                         x + 0.1 - 0.3 * partial,
@@ -245,7 +341,7 @@ export default class MineField extends TileMap {
                         '#fed7aa'
                     )
                 } else {
-                    const partial = this.beizer_curve((tween - 0.2) / 0.8)
+                    const partial = this.bezier((tween - 0.2) / 0.8)
 
                     this.rounded_rectangle(
                         x - 0.2 + 0.7 * partial,
@@ -260,6 +356,15 @@ export default class MineField extends TileMap {
         }
     }
 
+    /**
+     * Draw the cells.
+     * TODO: improve performance with:
+     * - Some sort of caching
+     * - Level of detail
+     * - More sofisticated canvas drawing
+     * - WebGL I guess
+     * @param {[[number, number], Cell][]} entries
+     */
     draw_grid(entries) {
         this.draw_explored(entries)
         this.draw_symbol(entries)
@@ -269,6 +374,9 @@ export default class MineField extends TileMap {
         if (this.game_over) this.canvas.classList.add('game-over')
     }
 
+    /**
+     * @param {number} new_density
+     */
     init(new_density) {
         this.density = new_density
         this.data = {}
@@ -279,6 +387,14 @@ export default class MineField extends TileMap {
         this.canvas.classList.remove('game-over')
     }
 
+    /**
+     * Note: don't use this for the game logic, this is only for drawing
+     * because this function only returns true after the first stage of the
+     * reveal animation is done.
+     * @param {number} x
+     * @param {number} y
+     * @returns {boolean} Whether the cell is explored
+     */
     explored(x, y) {
         return (
             this.animation[x + ',' + y] !== undefined &&
@@ -288,14 +404,33 @@ export default class MineField extends TileMap {
         )
     }
 
+    /**
+     * Check if the cell is a mine.
+     * Works for both explored and unexplored cells.
+     * This only matters when you explore a cell, so the cell is both a
+     * mine and not a mine until itself or an adjacent cell is explored.
+     * @param {number} x
+     * @param {number} y
+     * @returns {boolean} Whether the cell is a mine
+     */
     is_mine(x, y) {
         if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(Math.random() < this.density, false)
         return this.data[x + ',' + y].is_mine
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {HTMLAudioElement} audio
+     */
     explore(x, y, audio) {
+        // Create a new cell if it doesn't exist yet.
+        // This is also the only time to check for first click.
         if (this.data[x + ',' + y] === undefined) {
             if (this.first_click) {
+                // The 3x3 area around the first click doesn't have mines to give the player a head start.
+                // However the 5x5 area around the first click has almost the same amount of mines as any 5x5 area around any other cell.
+                // This doesn't work for higher densities, but I don't care.
                 const rest_mines = Math.min((25 * this.density) / 16, 1)
                 for (let i = x - 2; i <= x + 2; i++) {
                     for (let j = y - 2; j <= y + 2; j++) {
@@ -308,12 +443,15 @@ export default class MineField extends TileMap {
             } else this.is_mine(x, y)
         }
 
+        // Queue for BFS in case the cell doesn't have any adjacent mines.
         const queue = [[x, y, 0]]
 
         if (!this.data[x + ',' + y].explored && !this.data[x + ',' + y].flagged) {
             audio.play()
         }
 
+        // The only reason why we use BFS instead of just using recursive DFPS is because
+        // we want the cells to be revealed in the right order for the animation.
         while (queue.length > 0) {
             const [x, y, depth] = queue.shift()
 
@@ -338,6 +476,7 @@ export default class MineField extends TileMap {
                 }
             }
 
+            // If the cell doesn't have any adjacent mines, queue the adjacent cells to be explored.
             if (this.data[x + ',' + y].mines === 0) {
                 for (let i = -1; i <= 1; i++) {
                     for (let j = -1; j <= 1; j++) {
@@ -351,6 +490,10 @@ export default class MineField extends TileMap {
         this.first_click = false
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     flag(x, y) {
         if (this.data[x + ',' + y] === undefined) this.data[x + ',' + y] = new Cell(false, false)
         if (!this.data[x + ',' + y].explored) {
