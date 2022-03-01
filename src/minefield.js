@@ -2,7 +2,7 @@ import TileMap from './tilemap.js'
 import { BOMB_IMG, FLAG_IMG, FLAG_AUDIO, CLEAR_AUDIO } from './assets.js'
 
 /**
- * Store the data of a cell.  
+ * Store the data of a cell.
  * Might implement bitboard representation later for efficiency.
  * Still wondering if bitboard representation with getters/setters
  * are more efficient than object representation.
@@ -25,8 +25,8 @@ class Cell {
 const COLORS = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15', '#2dd4bf', '#ffffff', '#a3a3a3']
 
 /**
- * The class representing a minefield.  
- * It is responsible for creating the grid, handling most of the game logic, and drawing the grid.  
+ * The class representing a minefield.
+ * It is responsible for creating the grid, handling most of the game logic, and drawing the grid.
  * It also creates and hydrates the inverse button and score display.
  * @extends TileMap
  */
@@ -53,7 +53,7 @@ export default class MineField extends TileMap {
     }
 
     /**
-     * Handle the left (primary) click on a cell.  
+     * Handle the left (primary) click on a cell.
      * Also restart the game if it's over.
      * @param {number} x
      * @param {number} y
@@ -105,9 +105,9 @@ export default class MineField extends TileMap {
     }
 
     /**
-     * Get the animation frame for the cell.  
-     * The tilemap have already prevented the frame from going higher than 1  
-     * so we can just prevent the frame from going lower than 0.  
+     * Get the animation frame for the cell.
+     * The tilemap have already prevented the frame from going higher than 1
+     * so we can just prevent the frame from going lower than 0.
      * May need to change the way it handles the animation later.
      * @param {number} x
      * @param {number} y
@@ -256,7 +256,7 @@ export default class MineField extends TileMap {
     }
 
     /**
-     * Draw the symbols of the cells.  
+     * Draw the symbols of the cells.
      * A symbol is either a number, a flag, or a mine.
      * @param {[[number, number], Cell][]} entries The cells that need to be drawn
      */
@@ -277,7 +277,7 @@ export default class MineField extends TileMap {
     }
 
     /**
-     * Draw borders around an explored cells.  
+     * Draw borders around an explored cells.
      * Does not draw borders if the animation is still in the first stage.
      * @param {[[number, number], Cell][]} entries
      */
@@ -314,7 +314,7 @@ export default class MineField extends TileMap {
     }
 
     /**
-     * Draw an overlay over the cells with unfinished animation.  
+     * Draw an overlay over the cells with unfinished animation.
      * Essentially, this is the animation of the cells being revealed.
      * @param {[[number, number], Cell][]} entries
      */
@@ -406,8 +406,8 @@ export default class MineField extends TileMap {
     }
 
     /**
-     * Check if the cell is a mine.  
-     * Works for both explored and unexplored cells.  
+     * Check if the cell is a mine.
+     * Works for both explored and unexplored cells.
      * This only matters when you explore a cell, so the cell is both a
      * mine and not a mine until itself or an adjacent cell is explored.
      * @param {number} x

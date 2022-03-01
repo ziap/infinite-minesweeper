@@ -6,12 +6,29 @@ export default class TileMap {
     animation = {}
     animation_duration = 500
 
+    canvas = document.createElement('canvas')
+    ctx = this.canvas.getContext('2d')
+
     prev_time = 0
 
+    /**
+     * Placeholder function
+     * @param {number} x
+     * @param {number} y
+     */
     primary_action() {}
 
+    /**
+     * Placeholder function
+     * @param {number} x
+     * @param {number} y
+     */
     secondary_action() {}
 
+    /**
+     * Placeholder function
+     * @param {[[number, number], Cell][]} entries
+     */
     draw_grid() {}
 
     resize() {
@@ -20,9 +37,7 @@ export default class TileMap {
     }
 
     constructor() {
-        this.canvas = document.createElement('canvas')
         this.canvas.id = 'grid'
-        this.ctx = this.canvas.getContext('2d')
         window.addEventListener('resize', () => this.resize())
         this.resize()
 
@@ -33,6 +48,12 @@ export default class TileMap {
         requestAnimationFrame(this.update.bind(this))
     }
 
+    /**
+     * Convert mouse position to grid position
+     * @param {number} mouse_x
+     * @param {number} mouse_y
+     * @returns {[number, number]} The grid position
+     */
     get_mouse_pos(mouse_x, mouse_y) {
         return [
             Math.round((mouse_x - this.canvas.width / 2 + this.center[0]) / this.cell_size - 0.5),
@@ -40,6 +61,11 @@ export default class TileMap {
         ]
     }
 
+    /**
+     * @param {number} mouse_x
+     * @param {number} mouse_y
+     * @param {number} mouse_button
+     */
     interact(mouse_x, mouse_y, mouse_button) {
         const [x, y] = this.get_mouse_pos(mouse_x, mouse_y)
 
@@ -59,11 +85,19 @@ export default class TileMap {
         this.ctx.globalAlpha = 1
     }
 
+    /**
+     * Translate the grid position to the canvas position and draw the cells
+     * @param {number} delta_time
+     */
     draw(delta_time) {
+        // Prepare the canvas for drawing
         this.ctx.restore()
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.save()
         this.ctx.translate(this.canvas.width / 2 - this.center[0], this.canvas.height / 2 - this.center[1])
+
+        // Get the cells that are in the viewport
+        // Update all the cells animation in the process
         const entries = []
         for (const [key, cell] of Object.entries(this.data)) {
             if (this.animation[key] !== undefined) {
@@ -90,6 +124,15 @@ export default class TileMap {
         this.draw_cursor()
     }
 
+    /**
+     * Listen to mouse events:
+     * - Start dragging when the mouse is pressed.
+     * - Update the canvas position when the mouse is moved.
+     * Maybe we should draw the grid here and use a separate class to handle animations?
+     * - Stop dragging when the mouse is released or the mouse is out of focus.
+     * - Trigger the actions if the mouse haven't been moved significantly.
+     * - Zoom towards the mouse pointer when the mouse wheel is used.
+     */
     listen_mouse() {
         let last_mouse_pos = [0, 0]
         let is_dragging = false
@@ -122,8 +165,10 @@ export default class TileMap {
         })
 
         this.canvas.addEventListener('wheel', e => {
+            // TODO: explain this
             this.center[0] += e.clientX - this.canvas.width / 2
             this.center[1] += e.clientY - this.canvas.height / 2
+
             this.center[0] /= this.cell_size
             this.center[1] /= this.cell_size
             this.cell_size -= e.deltaY / 5
@@ -131,6 +176,7 @@ export default class TileMap {
             this.cell_size = Math.min(this.cell_size, 200)
             this.center[0] *= this.cell_size
             this.center[1] *= this.cell_size
+
             this.center[0] -= e.clientX - this.canvas.width / 2
             this.center[1] -= e.clientY - this.canvas.height / 2
         })
@@ -140,7 +186,15 @@ export default class TileMap {
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
     }
 
-    // Same as above, but for touch events
+    /**
+     * Listen to touch events:
+     * - Start dragging when the user touches the screen.
+     * - Update the canvas position when the user moves their finger.
+     * - The canvas position is updated by the average of all the touches.
+     * - Stop dragging when all the fingers are lifted.
+     * - Trigger the actions if the user haven't moved their finger significantly.
+     * - Scale the canvas when the user pinch the screen.
+     */
     listen_touch() {
         let last_touch_pos = [0, 0]
         let is_dragging = false
@@ -228,6 +282,9 @@ export default class TileMap {
         })
     }
 
+    /**
+     * @param {number} time
+     */
     update(time) {
         this.draw(time - this.prev_time)
         this.prev_time = time
