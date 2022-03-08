@@ -40,6 +40,7 @@ export default class Game {
             this.minefield.center = parsed.center || [0, 0]
             this.minefield.cell_size = parsed.cell_size || 80
             this.minefield.first_click = parsed.first || true
+            this.minefield.score = parsed.score || 0
         }
     }
 
@@ -107,7 +108,8 @@ export default class Game {
                             first: this.minefield.first_click,
                             data: data,
                             center: this.minefield.center,
-                            cell_size: this.minefield.cell_size
+                            cell_size: this.minefield.cell_size,
+                            score: this.minefield.score
                         })
                     )
                 )
