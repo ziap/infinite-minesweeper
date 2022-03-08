@@ -7,7 +7,7 @@ import { BOMB_IMG, FLAG_IMG, FLAG_AUDIO, CLEAR_AUDIO } from './assets.js'
  * Still wondering if bitboard representation with getters/setters
  * are more efficient than object representation.
  */
-class Cell {
+export class Cell {
     explored = false
     is_mine = false
     flagged = false
@@ -30,7 +30,7 @@ const COLORS = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15'
  * It also creates and hydrates the inverse button and score display.
  * @extends TileMap
  */
-export default class MineField extends TileMap {
+export class MineField extends TileMap {
     density = 0.25
     first_click = true
     score = 0
@@ -43,6 +43,12 @@ export default class MineField extends TileMap {
      * @type {{[key: string]: Cell}}
      */
     data = {}
+
+    /**
+     * This is called after a frame is drawn.
+     * Use it to update meta game logic.
+     */
+    post_update() {}
 
     constructor(new_density) {
         super()
@@ -393,6 +399,7 @@ export default class MineField extends TileMap {
                 if (Date.now() - this.game_over_time > 1000) this.canvas.classList.add('game-over')
             }
         }
+        this.post_update()
     }
 
     /**

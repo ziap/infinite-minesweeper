@@ -1,9 +1,15 @@
-import MineField from './minefield.js'
+import { Cell, MineField } from './minefield.js'
 
 const DIFFICULTY = {
-    easy: 1 / 6,
-    normal: 1 / 5,
-    hard: 1 / 4
+    easy: 0.1625,
+    normal: 0.2,
+    hard: 0.25
+}
+
+const GAMEMODES = {
+    casual: 0,
+    blitz: 1,
+    '500-tiles': 2
 }
 
 /**
@@ -15,7 +21,27 @@ const DIFFICULTY = {
  */
 export default class Game {
     minefield = new MineField(DIFFICULTY.normal)
+    game_mode = 0
     current_screen = null
+
+    load_data() {
+        const data = localStorage.getItem('casual-' + this.minefield.density)
+        if (data) {
+            const parsed = JSON.parse(atob(data))
+            this.minefield.data = {}
+            for (const [key, value] of parsed.data) {
+                this.minefield.data[key] = new Cell(false, false)
+                this.minefield.data[key].explored = value.explored
+                this.minefield.data[key].flagged = value.flagged
+                this.minefield.data[key].mines = value.mines
+                this.minefield.data[key].is_mine = value.is_mine
+                this.minefield.animation[key] = 1
+            }
+            this.minefield.center = parsed.center || [0, 0]
+            this.minefield.cell_size = parsed.cell_size || 80
+            this.minefield.first_click = parsed.first || true
+        }
+    }
 
     constructor() {
         const checker = document.querySelector('#menu-checker')
@@ -26,6 +52,7 @@ export default class Game {
         const settings = document.querySelector('#settings')
 
         this.current_screen = main_menu
+        this.game_mode = +localStorage.getItem('gamemode')
 
         this.listen('.show-game-config', 'click', this.show_screen(game_config))
         this.listen('.show-settings', 'click', this.show_screen(settings))
@@ -46,11 +73,49 @@ export default class Game {
 
         game_config.addEventListener('submit', e => {
             const config = new FormData(e.target)
-            this.minefield.init(DIFFICULTY[config.get('difficulty')])
+            const densiy = DIFFICULTY[config.get('difficulty')]
+            this.game_mode = GAMEMODES[config.get('gamemode')]
+            this.minefield.init(densiy)
+            if (this.game_mode == 0) {
+                this.load_data()
+            }
+            localStorage.setItem('gamemode', this.game_mode)
+            localStorage.setItem('density', densiy)
             checker.checked = false
             container.classList.add('hide')
             e.preventDefault()
         })
+
+        /**
+         * Save the game data to localStorage
+         */
+        this.minefield.post_update = () => {
+            if (this.minefield.game_over_time) {
+                localStorage.removeItem('casual-' + this.minefield.density)
+            } else {
+                const data = []
+                for (const [key, cell] of Object.entries(this.minefield.data)) {
+                    data.push([
+                        key,
+                        { flagged: cell.flagged, explored: cell.explored, mines: cell.mines, is_mine: cell.is_mine }
+                    ])
+                }
+                localStorage.setItem(
+                    'casual-' + this.minefield.density,
+                    btoa(
+                        JSON.stringify({
+                            first: this.minefield.first_click,
+                            data: data,
+                            center: this.minefield.center,
+                            cell_size: this.minefield.cell_size
+                        })
+                    )
+                )
+            }
+        }
+
+        this.minefield.init(localStorage.getItem('density') || DIFFICULTY.normal)
+        this.load_data()
     }
 
     /**

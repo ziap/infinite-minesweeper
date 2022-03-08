@@ -1,4 +1,4 @@
-import MineField from '../src/minefield.js'
+import { MineField } from '../src/minefield.js'
 import { jest } from '@jest/globals'
 
 window.HTMLMediaElement.prototype.play = () => {}
