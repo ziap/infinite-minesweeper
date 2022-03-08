@@ -33,8 +33,9 @@ const COLORS = ['#262626', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#facc15'
 export default class MineField extends TileMap {
     density = 0.25
     first_click = true
-    game_over = false
     score = 0
+    game_over_time = null
+    game_over_pos = null
     invert_button = document.createElement('input')
     score_display = document.createElement('h1')
 
@@ -61,8 +62,9 @@ export default class MineField extends TileMap {
     primary_action(x, y) {
         // Clone the audio element to avoid multiple audio elements playing at the same time causing earrape.
         const audio = CLEAR_AUDIO.cloneNode(true)
-        if (this.game_over) this.init(this.density)
-        else {
+        if (this.game_over_time) {
+            if (Date.now() - this.game_over_time > 1000) this.init(this.density)
+        } else {
             if (this.data[x + ',' + y] !== undefined && this.data[x + ',' + y].explored) {
                 // The cell is already explored.
 
@@ -100,8 +102,9 @@ export default class MineField extends TileMap {
      * @param {number} y
      */
     secondary_action(x, y) {
-        if (this.game_over) this.init(this.density)
-        else this.first_click ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true)) : this.flag(x, y)
+        if (this.game_over_time) {
+            if (Date.now() - this.game_over_time > 1000) this.init(this.density)
+        } else this.first_click ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true)) : this.flag(x, y)
     }
 
     /**
@@ -372,7 +375,24 @@ export default class MineField extends TileMap {
         this.draw_borders(entries)
         this.draw_overlay(entries)
         this.score_display.textContent = this.score
-        if (this.game_over) this.canvas.classList.add('game-over')
+        if (this.game_over_time) {
+            if (Date.now() - this.game_over_time > 500) {
+                const radius = this.cell_size * ((Date.now() - this.game_over_time - 500) / 100) ** 2
+                this.ctx.beginPath()
+                this.ctx.arc(
+                    this.game_over_pos[0] * this.cell_size + this.cell_size / 2,
+                    this.game_over_pos[1] * this.cell_size + this.cell_size / 2,
+                    radius,
+                    0,
+                    2 * Math.PI
+                )
+                this.ctx.fillStyle = '#262626'
+                this.ctx.fill()
+
+                this.draw_mine(...this.game_over_pos)
+                if (Date.now() - this.game_over_time > 1000) this.canvas.classList.add('game-over')
+            }
+        }
     }
 
     /**
@@ -384,7 +404,8 @@ export default class MineField extends TileMap {
         this.animation = {}
         this.score = 0
         this.first_click = true
-        this.game_over = false
+        this.game_over_time = null
+        this.game_over_pos = null
         this.canvas.classList.remove('game-over')
     }
 
@@ -460,7 +481,8 @@ export default class MineField extends TileMap {
             this.data[x + ',' + y].explored = true
             this.animation[x + ',' + y] = -0.2 * depth + (this.first_click ? 0.2 : 0)
             if (this.data[x + ',' + y].is_mine) {
-                this.game_over = true
+                this.game_over_time = Date.now()
+                this.game_over_pos = [x, y]
                 return
             }
 

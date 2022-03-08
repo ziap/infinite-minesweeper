@@ -93,7 +93,7 @@ describe('MineField', () => {
         minefield.primary_action(0, 3)
 
         // Assert
-        expect(minefield.game_over).toEqual(true)
+        expect(Date.now() - minefield.game_over_time).toBeLessThan(10)
     })
 
     it('Can invert click', () => {

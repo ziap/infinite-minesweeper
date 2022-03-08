@@ -14,9 +14,10 @@ const DIFFICULTY = {
  * - Handle the logic for the game modes
  */
 export default class Game {
-    constructor() {
-        this.minefield = new MineField(DIFFICULTY.normal)
+    minefield = new MineField(DIFFICULTY.normal)
+    current_screen = null
 
+    constructor() {
         const checker = document.querySelector('#menu-checker')
         const container = document.querySelector('#menu-container')
         const main_menu = document.querySelector('#main-menu')
