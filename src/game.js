@@ -8,6 +8,7 @@ const DIFFICULTY = {
 
 const GAMEMODES = {
     casual: 0,
+    'casual-new': 0,
     blitz: 1,
     '500-tiles': 2
 }
@@ -78,7 +79,10 @@ export default class Game {
             this.game_mode = GAMEMODES[config.get('gamemode')]
             this.minefield.init(densiy)
             if (this.game_mode == 0) {
-                this.load_data()
+                if (config.get('gamemode') == 'casual') this.load_data()
+                else {
+                    localStorage.removeItem('casual-' + this.minefield.density)
+                }
             }
             localStorage.setItem('gamemode', this.game_mode)
             localStorage.setItem('density', densiy)
