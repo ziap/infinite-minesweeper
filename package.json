@@ -47,7 +47,10 @@
             "ecmaVersion": "latest",
             "sourceType": "module"
         },
-        "rules": {}
+        "rules": {
+            "no-use-before-define": "error",
+            "eqeqeq": "error"
+        }
     },
     "prettier": {
         "trailingComma": "none",
