@@ -39,7 +39,7 @@ export default class Game {
             }
             this.minefield.center = parsed.center || [0, 0]
             this.minefield.cell_size = parsed.cell_size || 80
-            this.minefield.first_click = parsed.first || true
+            this.minefield.first_click = parsed.first !== undefined ? parsed.first : true
             this.minefield.score = parsed.score || 0
         }
     }
