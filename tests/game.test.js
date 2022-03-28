@@ -29,6 +29,11 @@ document.body.innerHTML = `
         <div id="leaderboard"></div>
         <div id="settings"></div>
     </div>
+    <div id="info">
+        <div id="difficulty"></div>
+        <div id="game-mode"></div>
+        <div id="timer">0</div>
+    </div>
     <div id="grid"></div>
     <div id="invert"></div>
     <div id="score"></div>

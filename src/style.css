@@ -62,7 +62,6 @@ header {
     width: 2rem;
     height: 2rem;
     padding: 1.25rem;
-    background: #262626;
     fill: #fff;
     transition: fill 200ms ease-in-out, background 200ms ease-in-out, transform 200ms ease-in-out;
 }
@@ -146,7 +145,7 @@ header {
 }
 
 .hide {
-    display: none !important;
+    display: none;
 }
 
 fieldset {
@@ -169,4 +168,38 @@ legend {
 .submenu > section {
     display: flex;
     justify-content: space-between;
+}
+
+#info {
+    opacity: 1;
+    position: fixed;
+    top: 5.6rem;
+    right: 0;
+    margin: 1.5rem;
+    padding: 1rem;
+    background: #262626f5;
+    width: 8rem;
+    color: #fff;
+    border-radius: 0.5rem;
+    pointer-events: none;
+    transition: opacity 200ms ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#info.hide {
+    opacity: 0;
+}
+
+.info-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#timer {
+    font-size: 2rem;
 }

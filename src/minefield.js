@@ -34,6 +34,7 @@ export class MineField extends TileMap {
     density = 0.25
     first_click = true
     score = 0
+    init_time = null
     game_over_time = null
     game_over_pos = null
     invert_button = document.createElement('input')
@@ -383,20 +384,22 @@ export class MineField extends TileMap {
         this.score_display.textContent = this.score
         if (this.game_over_time) {
             if (Date.now() - this.game_over_time > 500) {
-                const radius = this.cell_size * ((Date.now() - this.game_over_time - 500) / 100) ** 2
-                this.ctx.beginPath()
-                this.ctx.arc(
-                    this.game_over_pos[0] * this.cell_size + this.cell_size / 2,
-                    this.game_over_pos[1] * this.cell_size + this.cell_size / 2,
-                    radius,
-                    0,
-                    2 * Math.PI
-                )
-                this.ctx.fillStyle = '#262626'
-                this.ctx.fill()
-
-                this.draw_mine(...this.game_over_pos)
                 if (Date.now() - this.game_over_time > 1000) this.canvas.classList.add('game-over')
+                if (this.game_over_pos) {
+                    const radius = this.cell_size * ((Date.now() - this.game_over_time - 500) / 100) ** 2
+                    this.ctx.beginPath()
+                    this.ctx.arc(
+                        this.game_over_pos[0] * this.cell_size + this.cell_size / 2,
+                        this.game_over_pos[1] * this.cell_size + this.cell_size / 2,
+                        radius,
+                        0,
+                        2 * Math.PI
+                    )
+                    this.ctx.fillStyle = '#262626'
+                    this.ctx.fill()
+
+                    this.draw_mine(...this.game_over_pos)
+                }
             }
         }
         this.post_update()
@@ -406,6 +409,7 @@ export class MineField extends TileMap {
      * @param {number} new_density
      */
     init(new_density) {
+        this.init_time = Date.now()
         this.density = new_density
         this.data = {}
         this.animation = {}

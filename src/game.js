@@ -1,17 +1,25 @@
 import { Cell, MineField } from './minefield.js'
 
+function revert(obj) {
+    return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k[0].toUpperCase() + k.slice(1)]))
+}
+
 const DIFFICULTY = {
     easy: 0.1625,
     normal: 0.2,
     hard: 0.25
 }
 
+const DIFFICULTY_NAME = revert(DIFFICULTY)
+
 const GAMEMODES = {
-    casual: 0,
     'casual-new': 0,
+    casual: 0,
     blitz: 1,
     '500-tiles': 2
 }
+
+const GAMEMODES_NAME = revert(GAMEMODES)
 
 /**
  * A class representing a Minesweeper game.
@@ -48,10 +56,14 @@ export default class Game {
     constructor() {
         const checker = document.querySelector('#menu-checker')
         const container = document.querySelector('#menu-container')
+        const info = document.querySelector('#info')
+        const timer = document.querySelector('#timer')
         const main_menu = document.querySelector('#main-menu')
         const game_config = document.querySelector('#game-config')
         const leaderboard = document.querySelector('#leaderboard')
         const settings = document.querySelector('#settings')
+        const difficulty_display = document.querySelector('#difficulty')
+        const game_mode_display = document.querySelector('#game-mode')
 
         this.current_screen = main_menu
         this.game_mode = +localStorage.getItem('gamemode')
@@ -67,17 +79,24 @@ export default class Game {
         document.querySelector('#score').replaceWith(this.minefield.score_display)
 
         checker.addEventListener('input', e => {
-            if (e.target.checked) container.classList.remove('hide')
-            else container.classList.add('hide')
+            if (e.target.checked) {
+                container.classList.remove('hide')
+                info.classList.add('hide')
+            } else {
+                container.classList.add('hide')
+                info.classList.remove('hide')
+            }
 
             this.show_screen(main_menu)()
         })
 
         game_config.addEventListener('submit', e => {
             const config = new FormData(e.target)
-            const densiy = DIFFICULTY[config.get('difficulty')]
+            const density = DIFFICULTY[config.get('difficulty')]
             this.game_mode = GAMEMODES[config.get('gamemode')]
-            this.minefield.init(densiy)
+            this.minefield.init(density)
+            difficulty_display.textContent = DIFFICULTY_NAME[density]
+            game_mode_display.textContent = GAMEMODES_NAME[this.game_mode]
             if (this.game_mode === 0) {
                 if (config.get('gamemode') === 'casual') this.load_data()
                 else {
@@ -85,43 +104,63 @@ export default class Game {
                 }
             }
             localStorage.setItem('gamemode', this.game_mode)
-            localStorage.setItem('density', densiy)
+            localStorage.setItem('density', density)
             checker.checked = false
             container.classList.add('hide')
+            info.classList.remove('hide')
             e.preventDefault()
         })
 
         /**
-         * Save the game data to localStorage
+         * Handle all the gamemodes logic
          */
         this.minefield.post_update = () => {
-            if (this.minefield.game_over_time) {
-                localStorage.removeItem('casual-' + this.minefield.density)
-            } else {
-                const data = []
-                for (const [key, cell] of Object.entries(this.minefield.data)) {
-                    data.push([
-                        key,
-                        { flagged: cell.flagged, explored: cell.explored, mines: cell.mines, is_mine: cell.is_mine }
-                    ])
-                }
-                localStorage.setItem(
-                    'casual-' + this.minefield.density,
-                    btoa(
-                        JSON.stringify({
-                            first: this.minefield.first_click,
-                            data: data,
-                            center: this.minefield.center,
-                            cell_size: this.minefield.cell_size,
-                            score: this.minefield.score
-                        })
-                    )
-                )
+            switch (this.game_mode) {
+                case 0:
+                    timer.textContent = '∞'
+                    if (this.minefield.game_over_time) {
+                        localStorage.removeItem('casual-' + this.minefield.density)
+                    } else {
+                        const data = []
+                        for (const [key, cell] of Object.entries(this.minefield.data)) {
+                            data.push([
+                                key,
+                                {
+                                    flagged: cell.flagged,
+                                    explored: cell.explored,
+                                    mines: cell.mines,
+                                    is_mine: cell.is_mine
+                                }
+                            ])
+                        }
+                        localStorage.setItem(
+                            'casual-' + this.minefield.density,
+                            btoa(
+                                JSON.stringify({
+                                    first: this.minefield.first_click,
+                                    data: data,
+                                    center: this.minefield.center,
+                                    cell_size: this.minefield.cell_size,
+                                    score: this.minefield.score
+                                })
+                            )
+                        )
+                    }
+                    break
+                case 1:
+                    if (!this.minefield.game_over_time) {
+                        const time_left = ~~((this.minefield.init_time + 120000 - Date.now()) / 1000)
+                        timer.textContent = time_left + 's'
+                        if (time_left <= 0) this.minefield.game_over_time = Date.now()
+                    }
+                    break
             }
         }
 
         this.minefield.init(localStorage.getItem('density') || DIFFICULTY.normal)
-        this.load_data()
+        difficulty_display.textContent = DIFFICULTY_NAME[this.minefield.density]
+        game_mode_display.textContent = GAMEMODES_NAME[this.game_mode]
+        if (this.game_mode === 0) this.load_data()
     }
 
     /**
