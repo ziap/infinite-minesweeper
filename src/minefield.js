@@ -409,7 +409,6 @@ export class MineField extends TileMap {
      * @param {number} new_density
      */
     init(new_density) {
-        this.init_time = Date.now()
         this.density = new_density
         this.data = {}
         this.animation = {}
@@ -417,6 +416,7 @@ export class MineField extends TileMap {
         this.first_click = true
         this.game_over_time = null
         this.game_over_pos = null
+        this.init_time = null
         this.canvas.classList.remove('game-over')
     }
 
@@ -461,6 +461,8 @@ export class MineField extends TileMap {
         // This is also the only time to check for first click.
         if (this.data[x + ',' + y] === undefined) {
             if (this.first_click) {
+                this.init_time = Date.now()
+
                 // The 3x3 area around the first click doesn't have mines to give the player a head start.
                 // However the 5x5 area around the first click has almost the same amount of mines as any 5x5 area around any other cell.
                 // This doesn't work for higher densities, but I don't care.
