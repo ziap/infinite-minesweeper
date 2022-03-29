@@ -1,8 +1,6 @@
 import { MineField } from '../src/minefield.js'
 import { jest } from '@jest/globals'
 
-window.HTMLMediaElement.prototype.play = () => {}
-
 describe('MineField', () => {
     it('Can be instantiated', () => {
         // Arrange
@@ -146,6 +144,46 @@ describe('MineField', () => {
         minefield.init(0.1)
 
         await new Promise(resolve => setTimeout(resolve, 500))
+
+        // Assert
+        expect(minefield.score).toEqual(0)
+    })
+
+    it('Can restart by clicking after hitting a mine', () => {
+        // Arrange
+        const minefield = new MineField(1)
+
+        // Act
+        minefield.primary_action(0, 0)
+        minefield.primary_action(0, 3)
+        minefield.primary_action(0, 0)
+
+        // Assert
+        expect(minefield.score).toBeGreaterThan(0)
+
+        // Act
+        minefield.game_over_time = Date.now() - 2000
+        minefield.primary_action(0, 0)
+
+        // Assert
+        expect(minefield.score).toEqual(0)
+    })
+
+    it('Can restart by right clicking after hitting a mine', () => {
+        // Arrange
+        const minefield = new MineField(1)
+
+        // Act
+        minefield.primary_action(0, 0)
+        minefield.primary_action(0, 3)
+        minefield.secondary_action(0, 0)
+
+        // Assert
+        expect(minefield.score).toBeGreaterThan(0)
+
+        // Act
+        minefield.game_over_time = Date.now() - 2000
+        minefield.secondary_action(0, 0)
 
         // Assert
         expect(minefield.score).toEqual(0)
