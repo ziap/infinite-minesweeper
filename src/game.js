@@ -1,6 +1,6 @@
 import { Cell, MineField } from './minefield.js'
 
-function revert(obj) {
+function GetName(obj) {
     return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k[0].toUpperCase() + k.slice(1)]))
 }
 
@@ -10,7 +10,7 @@ const DIFFICULTY = {
     hard: 0.25
 }
 
-const DIFFICULTY_NAME = revert(DIFFICULTY)
+const DIFFICULTY_NAME = GetName(DIFFICULTY)
 
 const GAMEMODES = {
     'casual-new': 0,
@@ -19,7 +19,7 @@ const GAMEMODES = {
     '500-tiles': 2
 }
 
-const GAMEMODES_NAME = revert(GAMEMODES)
+const GAMEMODES_NAME = GetName(GAMEMODES)
 
 /**
  * A class representing a Minesweeper game.
@@ -64,6 +64,7 @@ export default class Game {
         const settings = document.querySelector('#settings')
         const difficulty_display = document.querySelector('#difficulty')
         const game_mode_display = document.querySelector('#game-mode')
+        const game_over_message = document.querySelector('#game-over-message')
 
         this.current_screen = main_menu
         this.game_mode = +localStorage.getItem('gamemode')
@@ -117,6 +118,7 @@ export default class Game {
         this.minefield.post_update = () => {
             switch (this.game_mode) {
                 case GAMEMODES.casual:
+                    game_over_message.textContent = 'Game Over!'
                     timer.textContent = '∞'
                     if (this.minefield.game_over_time) {
                         localStorage.removeItem('casual-' + this.minefield.density)
@@ -149,15 +151,38 @@ export default class Game {
                     break
                 case GAMEMODES.blitz:
                     if (!this.minefield.game_over_time) {
+                        game_over_message.textContent = 'Game Over!'
                         if (this.minefield.init_time) {
-                            const time_left = Math.max(0, ~~((this.minefield.init_time + 120000 - Date.now()) / 1000))
+                            const time_left = Math.max(
+                                0,
+                                Math.round((this.minefield.init_time + 120000 - Date.now()) / 1000)
+                            )
                             timer.textContent = time_left + 's'
-                            if (time_left <= 0) this.minefield.game_over_time = Date.now()
+                            if (time_left <= 0) {
+                                game_over_message.textContent = "Time's up!"
+                                this.minefield.game_over_time = Date.now()
+                            }
                         } else {
                             timer.textContent = '120s'
                         }
                     }
                     break
+                case GAMEMODES['500-tiles']:
+                    if (!this.minefield.game_over_time) {
+                        game_over_message.textContent = 'Game Over!'
+                        if (this.minefield.init_time) {
+                            const elapsed = Math.round((Date.now() - this.minefield.init_time) / 1000)
+
+                            timer.textContent = elapsed + 's'
+
+                            if (this.minefield.score >= 500) {
+                                game_over_message.textContent = 'You win!'
+                                this.minefield.game_over_time = Date.now()
+                            }
+                        } else {
+                            timer.textContent = '0s'
+                        }
+                    }
             }
         }
 

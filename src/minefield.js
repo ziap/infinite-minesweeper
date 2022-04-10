@@ -70,7 +70,7 @@ export class MineField extends TileMap {
         // Clone the audio element to avoid multiple audio elements playing at the same time causing earrape.
         const audio = CLEAR_AUDIO.cloneNode(true)
         if (this.game_over_time) {
-            if (Date.now() - this.game_over_time > 1000) this.init(this.density)
+            if (Date.now() - this.game_over_time > 1400) this.init(this.density)
         } else {
             if (this.data[x + ',' + y] !== undefined && this.data[x + ',' + y].explored) {
                 // The cell is already explored.
@@ -110,7 +110,7 @@ export class MineField extends TileMap {
      */
     secondary_action(x, y) {
         if (this.game_over_time) {
-            if (Date.now() - this.game_over_time > 1000) this.init(this.density)
+            if (Date.now() - this.game_over_time > 1400) this.init(this.density)
         } else this.first_click ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true)) : this.flag(x, y)
     }
 

@@ -1,7 +1,11 @@
 import Game from '../src/game.js'
+import { jest } from '@jest/globals'
+
+HTMLMediaElement.prototype.play = jest.fn()
 
 document.body.innerHTML = `
     <input type="checkbox" id="menu-checker" />
+    <h1 id="game-over-message">Game Over!</h1>
     <div id="menu-container">
         <div id="main-menu">
             <button class="show-game-config"></button>
@@ -15,7 +19,7 @@ document.body.innerHTML = `
                 <label><input type="radio" value="casual" name="gamemode" checked /> Casual</label>
                 <label><input type="radio" value="casual-new" name="gamemode" /> Casual (new game)</label>
                 <label><input type="radio" value="blitz" name="gamemode" /> Blitz</label>
-                <label><input type="radio" value="500-tiles" name="gamemode" disabled /> 500 tiles</label>
+                <label><input type="radio" value="500-tiles" name="gamemode" /> 500 tiles</label>
             </fieldset>
             <fieldset>
                 <legend>Select difficulty</legend>
@@ -194,7 +198,7 @@ describe('Game', () => {
         expect(game.game_mode).toEqual(1)
     })
 
-    it('Can update timer', () => {
+    it('Can update timer in blitz', () => {
         // Act
         game.minefield.update()
 
@@ -216,6 +220,49 @@ describe('Game', () => {
 
         // Act
         game.minefield.init_time = Date.now() - 120000
+        game.minefield.update()
+
+        // Assert
+        expect(game.minefield.game_over_time).toBeGreaterThan(0)
+    })
+
+    it('Can start 500 tiles mode', () => {
+        // Arrage
+        menu_checker.click()
+        show_game_config.click()
+
+        // Act
+        game_config.querySelector('[value="500-tiles"]').click()
+        game_config.querySelector('[value="normal"]').click()
+        game_config.querySelector('[type="submit"]').click()
+
+        // Assert
+        expect(game.minefield.density).toEqual(0.2)
+        expect(game.game_mode).toEqual(2)
+    })
+
+    it('Can update timer in 500 tiles', () => {
+        // Act
+        game.minefield.update()
+
+        // Assert
+        expect(document.querySelector('#timer').innerHTML).toEqual('0s')
+
+        // Act
+        game.minefield.primary_action(0, 0)
+        game.minefield.init_time = Date.now() - 2000
+        game.minefield.update()
+
+        // Assert
+        expect(document.querySelector('#timer').innerHTML).toEqual('2s')
+    })
+
+    it('Can win by getting 500 tiles', () => {
+        // Assert
+        expect(game.minefield.game_over_time).toBeNull()
+
+        // Act
+        game.minefield.score = 500
         game.minefield.update()
 
         // Assert

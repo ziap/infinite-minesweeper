@@ -1,6 +1,8 @@
 import TileMap from '../src/tilemap.js'
 import { jest } from '@jest/globals'
 
+HTMLMediaElement.prototype.play = jest.fn()
+
 describe('TileMap', () => {
     const tilemap = new TileMap()
 

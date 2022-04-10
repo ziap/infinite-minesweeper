@@ -1,6 +1,8 @@
 import { MineField } from '../src/minefield.js'
 import { jest } from '@jest/globals'
 
+HTMLMediaElement.prototype.play = jest.fn()
+
 describe('MineField', () => {
     it('Can be instantiated', () => {
         // Arrange
