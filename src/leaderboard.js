@@ -27,6 +27,9 @@ export function add(leaderboard_name, value, ascending = false) {
     localStorage.setItem('leaderboard-' + leaderboard_name, btoa(JSON.stringify(data)))
 }
 
+/**
+ * Remove a score from the leaderboard
+ */
 export function del(leaderboard_name, idx) {
     const data = get(leaderboard_name)
     data.splice(idx, 1)

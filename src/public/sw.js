@@ -1,8 +1,5 @@
 const CACHE_NAME = 'offline-cache'
-const PRECACHE_URLS = [
-    'clear.mp3',
-    'flag.mp3',
-]
+const PRECACHE_URLS = ['clear.mp3', 'flag.mp3']
 
 self.addEventListener('install', event => {
     event.waitUntil(

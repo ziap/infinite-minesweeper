@@ -1,0 +1,10 @@
+{
+    "name": "Infinite Minesweeper",
+    "short_name": "infinite-minesweeper.vercel.app",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#262626",
+    "theme_color": "#fed7aa",
+    "orientation": "any",
+    "icons": []
+}
