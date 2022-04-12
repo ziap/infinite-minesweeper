@@ -11,6 +11,10 @@
             import Game from './game.js'
 
             new Game()
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+            }
         </script>
     </head>
 

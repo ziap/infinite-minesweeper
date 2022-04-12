@@ -1,4 +1,5 @@
 import { Cell, MineField } from './minefield.js'
+import * as Leaderboard from './leaderboard.js'
 
 function GetName(obj) {
     return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k[0].toUpperCase() + k.slice(1)]))
@@ -161,6 +162,7 @@ export default class Game {
                             if (time_left <= 0) {
                                 game_over_message.textContent = "Time's up!"
                                 this.minefield.game_over_time = Date.now()
+                                Leaderboard.add('blitz-' + this.minefield.density, this.minefield.score, false)
                             }
                         } else {
                             timer.textContent = '120s'
@@ -178,6 +180,7 @@ export default class Game {
                             if (this.minefield.score >= 500) {
                                 game_over_message.textContent = 'You win!'
                                 this.minefield.game_over_time = Date.now()
+                                Leaderboard.add('500-tiles-' + this.minefield.density, elapsed, false)
                             }
                         } else {
                             timer.textContent = '0s'
