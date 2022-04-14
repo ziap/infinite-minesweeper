@@ -117,9 +117,9 @@ export default class Game {
          * Handle all the gamemodes logic
          */
         this.minefield.post_update = () => {
+            if (this.minefield.init_time) game_over_message.textContent = 'Game over!'
             switch (this.game_mode) {
                 case GAMEMODES.casual:
-                    game_over_message.textContent = 'Game Over!'
                     timer.textContent = '∞'
                     if (this.minefield.game_over_time) {
                         localStorage.removeItem('casual-' + this.minefield.density)
@@ -152,7 +152,6 @@ export default class Game {
                     break
                 case GAMEMODES.blitz:
                     if (!this.minefield.game_over_time) {
-                        game_over_message.textContent = 'Game Over!'
                         if (this.minefield.init_time) {
                             const time_left = Math.max(
                                 0,
@@ -171,7 +170,6 @@ export default class Game {
                     break
                 case GAMEMODES['500-tiles']:
                     if (!this.minefield.game_over_time) {
-                        game_over_message.textContent = 'Game Over!'
                         if (this.minefield.init_time) {
                             const elapsed = Math.round((Date.now() - this.minefield.init_time) / 1000)
 

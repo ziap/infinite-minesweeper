@@ -111,7 +111,10 @@ export class MineField extends TileMap {
     secondary_action(x, y) {
         if (this.game_over_time) {
             if (Date.now() - this.game_over_time > 1400) this.init(this.density)
-        } else this.first_click ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true)) : this.flag(x, y)
+        } else
+            this.first_click || this.invert_button.checked
+                ? this.explore(x, y, CLEAR_AUDIO.cloneNode(true))
+                : this.flag(x, y)
     }
 
     /**
