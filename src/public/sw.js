@@ -1,21 +1,26 @@
 const CACHE_NAME = 'offline-cache'
-const PRECACHE_URLS = ['clear.mp3', 'flag.mp3']
 
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches
-            .open(CACHE_NAME)
-            .then(cache => cache.addAll(PRECACHE_URLS))
-            .then(self.skipWaiting())
-    )
-})
+function addCache(request) {
+    const interval = setInterval(() => {
+        caches.open(CACHE_NAME).then(cache => {
+            try {
+                cache.add(request)
+            } catch {
+                return  
+            }
+            clearInterval(interval) 
+        })
+    }, 1000)
+}
 
 self.addEventListener('fetch', e =>
-    e.respondWith(
-        caches.open(CACHE_NAME).then(cache =>
-            fetch(e.request)
-                .then(response => cache.put(e.request, response.clone()).then(() => response))
-                .catch(() => cache.match(e.request).then(response => response))
-        )
-    )
+    e.respondWith((async() => {
+        const cache = await caches.open(CACHE_NAME)
+        try {
+            addCache(e.request)
+            return await fetch(e.request)
+        } catch (err) {
+            return await cache.match(e.request)
+        }
+    })())
 )
