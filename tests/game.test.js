@@ -1,5 +1,5 @@
-import Game from '../src/game.js'
 import { jest } from '@jest/globals'
+import Game from '../src/game.js'
 
 HTMLMediaElement.prototype.play = jest.fn()
 
@@ -31,7 +31,24 @@ document.body.innerHTML = `
                 <input type="submit" value="start" />
             </section>
         </form>
-        <div id="leaderboard"></div>
+        <div id="leaderboard">
+            <label>
+                Select leaderboard:
+                <select id="gamemode-leaderboard-selector">
+                    <option value="blitz" selected>Blitz</option>
+                    <option value="500-tiles">500 tiles</option>
+                </select>
+            </label>
+            <label>
+                Select difficulty:
+                <select id="difficulty-leaderboard-selector">
+                    <option value="easy">Easy</option>
+                    <option value="normal">Normal</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </label>
+            <ul id="leaderboard-list"></ul>
+        </div>
         <div id="settings"></div>
     </div>
     <div id="info">

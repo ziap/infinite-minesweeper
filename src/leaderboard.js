@@ -27,18 +27,17 @@ export function add(leaderboard_name, value, ascending = false) {
     localStorage.setItem('leaderboard-' + leaderboard_name, btoa(JSON.stringify(data)))
 }
 
-/**
- * Remove a score from the leaderboard
- */
-export function del(leaderboard_name, idx) {
+export function display(leaderboard_name, leaderboard_elem) {
+    // remove all children from the leaderboard element
+    while (leaderboard_elem.firstChild) {
+        leaderboard_elem.removeChild(leaderboard_elem.firstChild)
+    }
     const data = get(leaderboard_name)
-    data.splice(idx, 1)
-    localStorage.setItem('leaderboard-' + leaderboard_name, btoa(JSON.stringify(data)))
-}
 
-/**
- * Remove the leaderboard from the local storage
- */
-export function clear(leaderboard_name) {
-    localStorage.removeItem('leaderboard-' + leaderboard_name)
+    // add the scores to the leaderboard
+    for (const {time, value} of data) {
+        const li = document.createElement('li')
+        li.innerHTML = `<div>${value}</div><div>${new Date(time).toLocaleDateString()}</div>`
+        leaderboard_elem.appendChild(li)
+    }
 }

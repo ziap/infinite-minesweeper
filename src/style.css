@@ -123,6 +123,7 @@ header {
     width: fit-content;
     justify-content: center;
     margin: 0 auto;
+    padding: 5rem;
     font-size: 1.3rem;
 }
 
@@ -202,4 +203,38 @@ legend {
 
 #timer {
     font-size: 2rem;
+}
+
+#change-leaderboard {
+    display: flex;
+    flex-direction: column;
+}
+
+#change-leaderboard label {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+#change-leaderboard select {
+    margin-left: 2rem;
+}
+
+#leaderboard-list {
+    flex-grow: 1;
+    border: solid 2px #fff;
+    list-style-type: none;
+    color: #fff;
+    display: flex;
+    padding: 0.2rem;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#leaderboard-list>li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem;
 }

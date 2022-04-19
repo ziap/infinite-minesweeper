@@ -66,6 +66,9 @@ export default class Game {
         const difficulty_display = document.querySelector('#difficulty')
         const game_mode_display = document.querySelector('#game-mode')
         const game_over_message = document.querySelector('#game-over-message')
+        const gamemode_selector_elem = document.getElementById('gamemode-leaderboard-selector')
+        const difficulty_selector_elem = document.getElementById('difficulty-leaderboard-selector')
+        const leaderboard_elem = document.getElementById('leaderboard-list')
 
         this.current_screen = main_menu
         this.game_mode = +localStorage.getItem('gamemode')
@@ -114,10 +117,17 @@ export default class Game {
         })
 
         /**
+         * Handle leaderGameboard UI logic
+         */
+        const update_leaderboard = () => {
+            Leaderboard.display(gamemode_selector_elem.value + '-' + DIFFICULTY[difficulty_selector_elem.value], leaderboard_elem)
+        }
+
+        /**
          * Handle all the gamemodes logic
          */
         this.minefield.post_update = () => {
-            if (this.minefield.init_time) game_over_message.textContent = 'Game over!'
+            if (this.minefield.init_time && !this.minefield.game_over_time) game_over_message.textContent = 'Game over!'
             switch (this.game_mode) {
                 case GAMEMODES.casual:
                     timer.textContent = '∞'
@@ -162,6 +172,7 @@ export default class Game {
                                 game_over_message.textContent = "Time's up!"
                                 this.minefield.game_over_time = Date.now()
                                 Leaderboard.add('blitz-' + this.minefield.density, this.minefield.score, false)
+                                update_leaderboard()
                             }
                         } else {
                             timer.textContent = '120s'
@@ -178,7 +189,8 @@ export default class Game {
                             if (this.minefield.score >= 500) {
                                 game_over_message.textContent = 'You win!'
                                 this.minefield.game_over_time = Date.now()
-                                Leaderboard.add('500-tiles-' + this.minefield.density, elapsed, false)
+                                Leaderboard.add('500-tiles-' + this.minefield.density, elapsed + 's', true)
+                                update_leaderboard()
                             }
                         } else {
                             timer.textContent = '0s'
@@ -186,6 +198,9 @@ export default class Game {
                     }
             }
         }
+
+        gamemode_selector_elem.addEventListener('change', update_leaderboard)
+        difficulty_selector_elem.addEventListener('change', update_leaderboard)
 
         this.minefield.init(localStorage.getItem('density') || DIFFICULTY.normal)
         difficulty_display.textContent = DIFFICULTY_NAME[this.minefield.density]

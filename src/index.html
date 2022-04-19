@@ -1,99 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Minesweeper but on an infinite board" />
-        <meta name="theme-color" content="#fed7aa" />
-        <link rel="stylesheet" href="./style.css" />
-        <link rel="manifest" href="./manifest.json" />
-        <link rel="shortcut icon" href="./icons/icon-512x512.png" type="image/x-icon" />
-        <title>Infinite Minesweeper</title>
-        <script type="module">
-            import Game from './game.js'
 
-            new Game()
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Minesweeper but on an infinite board" />
+    <meta name="theme-color" content="#fed7aa" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="shortcut icon" href="./icons/icon-512x512.png" type="image/x-icon" />
+    <title>Infinite Minesweeper</title>
+    <script type="module">
+        import Game from './game.js'
 
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-            }
-        </script>
-    </head>
+        new Game()
 
-    <body>
-        <div id="grid"></div>
-        <div class="game-over-menu">
-            <div class="game-over-menu-content">
-                <h1 id="game-over-message">Game over!</h1>
-                <p>Click anywhere to play again</p>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+        }
+    </script>
+</head>
+
+<body>
+    <div id="grid"></div>
+    <div class="game-over-menu">
+        <div class="game-over-menu-content">
+            <h1 id="game-over-message">Game over!</h1>
+            <p>Click anywhere to play again</p>
+        </div>
+    </div>
+    <div class="header-bg">
+        <header>
+            <label for="menu-checker" class="btn">
+                <input type="checkbox" id="menu-checker" hidden />
+                <svg class="fa" viewBox="0 0 256 512">
+                    <path
+                        d="M118.6 105.4l128 127.1C252.9 239.6 256 247.8 256 255.1s-3.125 16.38-9.375 22.63l-128 127.1c-9.156 9.156-22.91 11.9-34.88 6.943S64 396.9 64 383.1V128c0-12.94 7.781-24.62 19.75-29.58S109.5 96.23 118.6 105.4z" />
+                </svg>
+            </label>
+            <div id="menu-container" class="hide">
+                <form class="submenu" id="main-menu">
+                    <input type="button" class="menu-button show-game-config" value="new game" />
+                    <input type="button" class="menu-button show-leaderboard" value="leaderboard" />
+                    <input type="button" class="menu-button show-settings" value="settings" />
+                </form>
+                <form class="submenu hide" id="game-config">
+                    <fieldset>
+                        <legend>Select game mode</legend>
+                        <label><input type="radio" value="casual" name="gamemode" checked /> Casual</label>
+                        <label hidden><input type="radio" value="casual-new" name="gamemode" /> Casual (new
+                            game)</label>
+                        <label><input type="radio" value="blitz" name="gamemode" /> Blitz</label>
+                        <label><input type="radio" value="500-tiles" name="gamemode" /> 500 tiles</label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Select difficulty</legend>
+                        <label><input type="radio" value="easy" name="difficulty" /> Easy</label>
+                        <label><input type="radio" value="normal" name="difficulty" checked /> Normal</label>
+                        <label><input type="radio" value="hard" name="difficulty" /> Hard</label>
+                    </fieldset>
+                    <section>
+                        <input type="submit" class="menu-button start-game" value="start" />
+                        <input type="button" class="menu-button return-to-menu" value="return" />
+                    </section>
+                </form>
+                <div class="submenu hide" id="leaderboard">
+                    <form id="change-leaderboard">
+                        <label>
+                            Select leaderboard:
+                            <select id="gamemode-leaderboard-selector">
+                                <option value="blitz" selected>Blitz</option>
+                                <option value="500-tiles">500 tiles</option>
+                            </select>
+                        </label>
+                        <label>
+                            Select difficulty:
+                            <select id="difficulty-leaderboard-selector">
+                                <option value="easy">Easy</option>
+                                <option value="normal">Normal</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </label>
+                    </form>
+                    <ul id="leaderboard-list"></ul>
+                    <input type="button" class="menu-button return-to-menu" value="return" />
+                </div>
+                <div class="submenu hide" id="settings">
+                    <section>
+                        <input type="button" class="menu-button return-to-menu" value="return" />
+                    </section>
+                </div>
             </div>
-        </div>
-        <div class="header-bg">
-            <header>
-                <label for="menu-checker" class="btn">
-                    <input type="checkbox" id="menu-checker" hidden />
-                    <svg class="fa" viewBox="0 0 256 512">
-                        <path
-                            d="M118.6 105.4l128 127.1C252.9 239.6 256 247.8 256 255.1s-3.125 16.38-9.375 22.63l-128 127.1c-9.156 9.156-22.91 11.9-34.88 6.943S64 396.9 64 383.1V128c0-12.94 7.781-24.62 19.75-29.58S109.5 96.23 118.6 105.4z" />
-                    </svg>
-                </label>
-                <div id="menu-container" class="hide">
-                    <form class="submenu" id="main-menu">
-                        <input type="button" class="menu-button show-game-config" value="new game" />
-                        <input type="button" class="menu-button show-leaderboard" value="leaderboard" />
-                        <input type="button" class="menu-button show-settings" value="settings" />
-                    </form>
-                    <form class="submenu hide" id="game-config">
-                        <fieldset>
-                            <legend>Select game mode</legend>
-                            <label><input type="radio" value="casual" name="gamemode" checked /> Casual</label>
-                            <label><input type="radio" value="casual-new" name="gamemode" /> Casual (new game)</label>
-                            <label><input type="radio" value="blitz" name="gamemode" /> Blitz</label>
-                            <label><input type="radio" value="500-tiles" name="gamemode" /> 500 tiles</label>
-                        </fieldset>
-                        <fieldset>
-                            <legend>Select difficulty</legend>
-                            <label><input type="radio" value="easy" name="difficulty" /> Easy</label>
-                            <label><input type="radio" value="normal" name="difficulty" checked /> Normal</label>
-                            <label><input type="radio" value="hard" name="difficulty" /> Hard</label>
-                        </fieldset>
-                        <section>
-                            <input type="submit" class="menu-button start-game" value="start" />
-                            <input type="button" class="menu-button return-to-menu" value="return" />
-                        </section>
-                    </form>
-                    <form class="submenu hide" id="leaderboard">
-                        <section>
-                            <input type="button" class="menu-button return-to-menu" value="return" />
-                        </section>
-                    </form>
-                    <form class="submenu hide" id="settings">
-                        <section>
-                            <input type="button" class="menu-button return-to-menu" value="return" />
-                        </section>
-                    </form>
+            <div id="info">
+                <div class="info-header">
+                    <div id="difficulty">Normal</div>
+                    <div id="game-mode">Casual</div>
                 </div>
-                <div id="info">
-                    <div class="info-header">
-                        <div id="difficulty">Normal</div>
-                        <div id="game-mode">Casual</div>
-                    </div>
-                    <svg class="fa" viewBox="0 0 512 512">
-                        <path
-                            d="M256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512zM232 256C232 264 236 271.5 242.7 275.1L338.7 339.1C349.7 347.3 364.6 344.3 371.1 333.3C379.3 322.3 376.3 307.4 365.3 300L280 243.2V120C280 106.7 269.3 96 255.1 96C242.7 96 231.1 106.7 231.1 120L232 256z" />
-                    </svg>
-                    <div id="timer">0</div>
-                </div>
-                <div id="score">0</div>
-                <label for="invert" class="btn">
-                    <div id="invert"></div>
-                    <svg class="fa" viewBox="0 0 512 512">
-                        <path
-                            d="M64 496C64 504.8 56.75 512 48 512h-32C7.25 512 0 504.8 0 496V32c0-17.75 14.25-32 32-32s32 14.25 32 32V496zM476.3 0c-6.365 0-13.01 1.35-19.34 4.233c-45.69 20.86-79.56 27.94-107.8 27.94c-59.96 0-94.81-31.86-163.9-31.87C160.9 .3055 131.6 4.867 96 15.75v350.5c32-9.984 59.87-14.1 84.85-14.1c73.63 0 124.9 31.78 198.6 31.78c31.91 0 68.02-5.971 111.1-23.09C504.1 355.9 512 344.4 512 332.1V30.73C512 11.1 495.3 0 476.3 0z"></path>
-                    </svg>
-                </label>
-            </header>
-        </div>
-    </body>
+                <svg class="fa" viewBox="0 0 512 512">
+                    <path
+                        d="M256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512zM232 256C232 264 236 271.5 242.7 275.1L338.7 339.1C349.7 347.3 364.6 344.3 371.1 333.3C379.3 322.3 376.3 307.4 365.3 300L280 243.2V120C280 106.7 269.3 96 255.1 96C242.7 96 231.1 106.7 231.1 120L232 256z" />
+                </svg>
+                <div id="timer">0</div>
+            </div>
+            <div id="score">0</div>
+            <label for="invert" class="btn">
+                <div id="invert"></div>
+                <svg class="fa" viewBox="0 0 512 512">
+                    <path
+                        d="M64 496C64 504.8 56.75 512 48 512h-32C7.25 512 0 504.8 0 496V32c0-17.75 14.25-32 32-32s32 14.25 32 32V496zM476.3 0c-6.365 0-13.01 1.35-19.34 4.233c-45.69 20.86-79.56 27.94-107.8 27.94c-59.96 0-94.81-31.86-163.9-31.87C160.9 .3055 131.6 4.867 96 15.75v350.5c32-9.984 59.87-14.1 84.85-14.1c73.63 0 124.9 31.78 198.6 31.78c31.91 0 68.02-5.971 111.1-23.09C504.1 355.9 512 344.4 512 332.1V30.73C512 11.1 495.3 0 476.3 0z">
+                    </path>
+                </svg>
+            </label>
+        </header>
+    </div>
+</body>
+
 </html>
